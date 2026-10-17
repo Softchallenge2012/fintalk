@@ -1,0 +1,404 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet data-dc-atomics><link rel="preconnect" href="https://fonts.googleapis.com"><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet"><style>body{margin:0;background:#F8F9FA;font-family:'Inter',system-ui,sans-serif;font-feature-settings:'tnum' 1,'cv11' 1;color:#1F1F1F;-webkit-font-smoothing:antialiased}a{color:#1F3B8F}a:hover{color:#1F1F1F}button{font-family:inherit}</style></helmet>
+<div style="display:flex;min-height:100vh;background:#F8F9FA">
+  <div style="width:212px;flex:none;background:#F1F3F4;border-right:1px solid #E3E3E3;padding:20px 12px;display:flex;flex-direction:column;gap:28px">
+    <div style="display:flex;align-items:center;gap:9px;padding:0 10px"><div style="width:18px;height:18px;border-radius:5px;background:#1F3B8F;display:grid;place-items:center"><div style="width:6px;height:6px;border-radius:50%;background:#F8F9FA"></div></div><span style="font-weight:600;font-size:15px;letter-spacing:-0.01em">OnFile</span></div>
+    <div style="display:flex;flex-direction:column;gap:2px;font-size:13px">
+      <sc-for list="{{ nav }}" as="n" hint-placeholder-count="6"><div onClick="{{ n.go }}" data-event="{{ n.ev }}" style="display:flex;justify-content:space-between;padding:7px 10px;border-radius:6px;cursor:pointer;background:{{ n.bg }};box-shadow:{{ n.sh }};font-weight:{{ n.fw }};color:{{ n.fg }}"><span>{{ n.label }}</span><span style="font-variant-numeric:tabular-nums;font-size:12px">{{ n.count }}</span></div></sc-for>
+    </div>
+    <div style="margin:0 2px;padding:12px;border-radius:8px;background:#F1F3F4;font-size:12px;line-height:1.45;color:#1F1F1F;display:flex;flex-direction:column;gap:6px"><span style="font-weight:600;color:#1F1F1F">Policy is locked</span><span>OnFile only dials numbers that were in the vendor master before the change request. Nobody can override this from a call, email or invoice.</span></div>
+    <div style="margin-top:auto;padding:10px;border-top:1px solid #E3E3E3;font-size:12px;color:#5F6368;display:flex;flex-direction:column;gap:2px"><span style="color:#1F1F1F;font-weight:500">{{ actorName }}</span><span>Calder &amp; Roe · {{ actorRole }}</span></div>
+  </div>
+
+  <div style="flex:1;min-width:0;display:flex;flex-direction:column">
+  <sc-if value="{{ isQueue }}" hint-placeholder-val="{{ true }}">
+    <div style="padding:32px 40px 20px;display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:24px">
+      <div style="display:flex;flex-direction:column;gap:6px;max-width:560px"><span style="font-size:26px;font-weight:600;letter-spacing:-0.02em">Payments</span><span style="font-size:14px;line-height:1.5;color:#5F6368;text-wrap:pretty">Every payment to a changed bank account is held until the vendor confirms it on a phone number we already had on file.</span></div>
+      <div style="display:flex;gap:36px">
+        <div style="display:flex;flex-direction:column;gap:3px"><span style="font-size:11px;color:#80868B;text-transform:uppercase;letter-spacing:.06em">Held</span><span style="font-variant-numeric:tabular-nums;font-size:20px;font-weight:500">{{ heldTotal }}</span></div>
+        <div style="display:flex;flex-direction:column;gap:3px"><span style="font-size:11px;color:#80868B;text-transform:uppercase;letter-spacing:.06em">Median time to verify</span><span style="font-variant-numeric:tabular-nums;font-size:20px;font-weight:500">7m 52s</span></div>
+        <div style="display:flex;flex-direction:column;gap:3px"><span style="font-size:11px;color:#80868B;text-transform:uppercase;letter-spacing:.06em">Blocked this month</span><span style="font-variant-numeric:tabular-nums;font-size:20px;font-weight:500">$96,410.50</span></div>
+      </div>
+    </div>
+    <div style="margin:0 40px 40px;border:1px solid #E3E3E3;border-radius:10px;background:#FFFFFF;overflow-x:auto">
+      <div style="display:grid;grid-template-columns:minmax(140px,1.5fr) minmax(170px,1.7fr) minmax(90px,.9fr) minmax(110px,1fr) 150px;gap:16px;padding:11px 20px;font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:#80868B;border-bottom:1px solid #E3E3E3;background:#F8F9FA">
+        <span>Vendor</span><span>Bank change</span><span>Detected in</span><span style="text-align:right">Amount held</span><span>Status</span>
+      </div>
+      <sc-for list="{{ rows }}" as="r" hint-placeholder-count="7">
+        <div onClick="{{ r.open }}" data-event="payment.open" style="display:grid;grid-template-columns:minmax(140px,1.5fr) minmax(170px,1.7fr) minmax(90px,.9fr) minmax(110px,1fr) 150px;gap:16px;padding:15px 20px;align-items:center;border-bottom:1px solid #F1F3F4;font-size:13px;cursor:pointer" style-hover="background:#F8F9FA">
+          <div style="display:flex;flex-direction:column;gap:3px;min-width:0"><span style="font-weight:500">{{ r.vendor }}</span><span style="font-size:12px;color:#80868B;font-variant-numeric:tabular-nums">{{ r.inv }}</span></div>
+          <div style="display:flex;align-items:center;gap:8px;font-variant-numeric:tabular-nums;font-size:12px;color:#1F1F1F;min-width:0;flex-wrap:wrap"><span style="color:#80868B;text-decoration:line-through">{{ r.from }}</span><span style="color:#80868B">→</span><span>{{ r.to }}</span></div>
+          <span style="color:#5F6368">{{ r.source }}</span>
+          <span style="text-align:right;font-variant-numeric:tabular-nums">{{ r.amount }}</span>
+          <div><span style="display:inline-flex;align-items:center;gap:6px;padding:3px 9px;border-radius:999px;font-size:12px;font-weight:500;background:{{ r.bg }};color:{{ r.fg }}"><span style="width:6px;height:6px;border-radius:50%;background:{{ r.fg }}"></span>{{ r.status }}</span></div>
+        </div>
+      </sc-for>
+    </div>
+  </sc-if>
+
+  <sc-if value="{{ isSettings }}" hint-placeholder-val="{{ false }}">
+    <div style="padding:32px 40px 48px;display:flex;flex-direction:column;gap:24px;max-width:1100px">
+      <div style="display:flex;flex-direction:column;gap:6px"><span style="font-size:26px;font-weight:600;letter-spacing:-0.02em">Settings · Advanced</span><span style="font-size:14px;color:#5F6368">Admins only. Changes don't affect payments already on hold.</span></div>
+      <div style="display:flex;flex-direction:column;gap:12px"><span style="font-size:15px;font-weight:600">Callback policy</span>
+        <div style="border:1px solid #E3E3E3;border-radius:10px;background:#FFFFFF">
+          <sc-for list="{{ policy }}" as="q" hint-placeholder-count="5"><div style="display:flex;justify-content:space-between;gap:16px;padding:13px 18px;border-bottom:1px solid #F1F3F4;font-size:13px"><span>{{ q.k }}</span><span style="color:#5F6368;text-align:right">{{ q.v }}</span></div></sc-for>
+        </div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:12px"><span style="font-size:15px;font-weight:600">Number scoring · Northwind Supply Co.</span>
+        <div style="border:1px solid #E3E3E3;border-radius:10px;background:#FFFFFF;overflow:hidden">
+          <div style="display:grid;grid-template-columns:minmax(0,1.6fr) minmax(0,1fr) minmax(0,1fr) minmax(0,1fr) 170px;gap:16px;padding:11px 20px;font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:#80868B;border-bottom:1px solid #E3E3E3;background:#F8F9FA"><span>Number</span><span>On file since</span><span>Last changed</span><span>Line type</span><span>Trust score</span></div>
+          <sc-for list="{{ phones }}" as="p" hint-placeholder-count="4">
+            <div style="display:grid;grid-template-columns:minmax(0,1.6fr) minmax(0,1fr) minmax(0,1fr) minmax(0,1fr) 170px;gap:16px;padding:16px 20px;align-items:center;border-bottom:1px solid #F1F3F4;font-size:13px;background:{{ p.rowBg }}">
+              <div style="display:flex;flex-direction:column;gap:3px;min-width:0"><span style="font-variant-numeric:tabular-nums;font-weight:500;text-decoration:{{ p.strike }}">{{ p.num }}</span><span style="font-size:12px;color:#5F6368">{{ p.who }}</span></div>
+              <span style="color:#1F1F1F">{{ p.since }}</span>
+              <span style="color:{{ p.changedFg }}">{{ p.changed }}</span>
+              <span style="color:#1F1F1F">{{ p.line }}</span>
+              <div style="display:flex;flex-direction:column;gap:6px">
+                <div style="display:flex;justify-content:space-between;align-items:baseline"><span style="font-variant-numeric:tabular-nums;font-size:15px;font-weight:500;color:{{ p.fg }}">{{ p.score }}</span><span style="font-size:11px;font-weight:500;color:{{ p.fg }}">{{ p.verdict }}</span></div>
+                <div style="height:4px;border-radius:2px;background:#F1F3F4;overflow:hidden"><div style="height:100%;width:{{ p.pct }};background:{{ p.fg }}"></div></div>
+              </div>
+            </div>
+          </sc-for>
+        </div>
+        </div>
+    </div>
+  </sc-if>
+
+  <sc-if value="{{ isCase }}" hint-placeholder-val="{{ false }}">
+    <div style="padding:22px 40px 0;display:flex;flex-direction:column;gap:18px;border-bottom:1px solid #E3E3E3;background:#FFFFFF">
+      <div style="display:flex;flex-wrap:wrap;align-items:flex-start;justify-content:space-between;gap:20px">
+        <div style="display:flex;flex-direction:column;gap:6px;min-width:0">
+          <span onClick="{{ goQueue }}" style="font-size:12px;color:#5F6368;cursor:pointer">← Payments</span>
+          <span style="font-size:24px;line-height:1.2;font-weight:600;letter-spacing:-0.02em">{{ c.vendor }}</span><span style="font-variant-numeric:tabular-nums;font-size:13px;color:#5F6368">{{ c.inv }} · {{ c.amount }}</span>
+        </div>
+        <div style="display:flex;gap:8px">
+          <button onClick="{{ prev }}" data-event="{{ prevEv }}" style="height:34px;padding:0 14px;border-radius:7px;border:1px solid #C4C7C5;background:#FFFFFF;font-size:13px;color:#1F1F1F;cursor:pointer">Back</button>
+          <button onClick="{{ next }}" data-event="{{ nextEv }}" style="height:34px;padding:0 16px;border-radius:7px;border:none;background:#1F3B8F;font-size:13px;font-weight:500;color:#FFFFFF;cursor:pointer">{{ nextLabel }}</button>
+        </div>
+      </div>
+      <div style="display:flex;flex-wrap:wrap;gap:0 4px">
+        <sc-for list="{{ steps }}" as="s" hint-placeholder-count="5">
+          <div onClick="{{ s.go }}" data-event="{{ s.ev }}" style="display:flex;align-items:center;gap:8px;padding:10px 12px 12px;border-bottom:2px solid {{ s.bar }};cursor:pointer;font-size:13px;white-space:nowrap;color:{{ s.fg }}">
+            <span style="width:20px;height:20px;border-radius:50%;display:grid;place-items:center;font-variant-numeric:tabular-nums;font-size:11px;background:{{ s.dotBg }};color:{{ s.dotFg }}">{{ s.mark }}</span>{{ s.label }}
+          </div>
+        </sc-for>
+      </div>
+    </div>
+
+    <sc-if value="{{ s0 }}" hint-placeholder-val="{{ false }}">
+      <div style="padding:28px 40px 48px;display:grid;grid-template-columns:repeat(auto-fit,minmax(380px,1fr));gap:24px;align-items:start">
+        <div style="display:flex;flex-direction:column;gap:20px">
+          <div style="display:flex;flex-direction:column;gap:6px"><span style="font-size:18px;font-weight:600;letter-spacing:-0.01em">Payment held at 09:14</span><span style="font-size:14px;line-height:1.5;color:#5F6368;text-wrap:pretty">The invoice asks us to pay a different bank account than the one in the vendor master. Nothing moves until the vendor confirms on a number we already trust.</span></div>
+          <div style="border:1px solid #E3E3E3;border-radius:10px;background:#FFFFFF;overflow:hidden">
+            <div style="display:grid;grid-template-columns:110px 1fr 1fr;font-size:13px">
+              <span style="padding:11px 16px;background:#F8F9FA;border-bottom:1px solid #E3E3E3"></span><span style="padding:11px 16px;background:#F8F9FA;border-bottom:1px solid #E3E3E3;font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:#80868B">On file since 2019</span><span style="padding:11px 16px;background:#F8F9FA;border-bottom:1px solid #E3E3E3;font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:#A3242E">Requested on invoice</span>
+              <span style="padding:12px 16px;color:#5F6368;border-bottom:1px solid #F1F3F4">Bank</span><span style="padding:12px 16px;border-bottom:1px solid #F1F3F4">JPMorgan Chase</span><span style="padding:12px 16px;border-bottom:1px solid #F1F3F4;background:#FCE8E6">Lakeview Credit Union</span>
+              <span style="padding:12px 16px;color:#5F6368;border-bottom:1px solid #F1F3F4">Routing</span><span style="padding:12px 16px;border-bottom:1px solid #F1F3F4;font-variant-numeric:tabular-nums">021000021</span><span style="padding:12px 16px;border-bottom:1px solid #F1F3F4;font-variant-numeric:tabular-nums;background:#FCE8E6">271992478</span>
+              <span style="padding:12px 16px;color:#5F6368">Account</span><span style="padding:12px 16px;font-variant-numeric:tabular-nums">•••• 4471</span><span style="padding:12px 16px;font-variant-numeric:tabular-nums;background:#FCE8E6">•••• 0918</span>
+            </div>
+          </div>
+          <div style="display:flex;flex-direction:column;gap:10px">
+            <span style="font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:#80868B">From the invoice PDF, page 2</span>
+            <div style="border:1px solid #E3E3E3;border-radius:10px;background:#FFFFFF;padding:22px 24px;font-variant-numeric:tabular-nums;font-size:12.5px;line-height:1.75;color:#1F1F1F">
+              <div>REMITTANCE UPDATE — EFFECTIVE IMMEDIATELY</div>
+              <div>Please <span style="background:#FCE8E6;padding:1px 3px;border-radius:3px">remit to our new account</span> at Lakeview Credit Union,</div>
+              <div>routing 271992478, account ending 0918.</div>
+              <div>Questions? Call our treasury desk at <span style="background:#FCE8E6;padding:1px 3px;border-radius:3px;text-decoration:line-through">+1 (646) 555-0199</span>.</div>
+              <div style="margin-top:8px;color:#80868B">— Northwind Supply Co., Accounts Receivable</div>
+            </div>
+          </div>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:14px">
+          <div style="display:flex;align-items:baseline;justify-content:space-between"><span style="font-size:18px;font-weight:600;letter-spacing:-0.01em">What OnFile refused to do</span><span style="font-size:12px;color:#80868B;font-variant-numeric:tabular-nums">3 refusals</span></div>
+          <sc-for list="{{ refusals }}" as="f" hint-placeholder-count="3">
+            <div style="border:1px solid #F4C7C3;border-radius:10px;background:#FFFFFF;padding:16px 18px;display:flex;gap:14px">
+              <div style="width:22px;height:22px;flex:none;border-radius:50%;background:#A3242E;color:#FFFFFF;display:grid;place-items:center;font-size:12px;font-weight:600">✕</div>
+              <div style="display:flex;flex-direction:column;gap:5px;min-width:0">
+                <div style="display:flex;gap:10px;align-items:baseline;flex-wrap:wrap"><span style="font-size:14px;font-weight:500">{{ f.title }}</span><span style="font-variant-numeric:tabular-nums;font-size:11px;color:#80868B">{{ f.time }}</span></div>
+                <span style="font-size:13px;line-height:1.5;color:#5F6368;text-wrap:pretty">{{ f.body }}</span>
+              </div>
+            </div>
+          </sc-for>
+          <div style="padding:14px 18px;border-radius:10px;background:#F1F3F4;font-size:13px;line-height:1.5;color:#1F1F1F">Next: OnFile picks the safest number already in the vendor master.</div>
+        </div>
+      </div>
+    </sc-if>
+
+    <sc-if value="{{ s1 }}" hint-placeholder-val="{{ false }}">
+      <div style="padding:28px 40px 48px;display:flex;flex-direction:column;gap:20px;max-width:1100px">
+        <div style="display:flex;flex-direction:column;gap:6px"><span style="font-size:18px;font-weight:600;letter-spacing:-0.01em">Who OnFile will call</span><span style="font-size:14px;line-height:1.5;color:#5F6368;max-width:640px;text-wrap:pretty">OnFile picked the safest number already in the vendor master. The number printed on the invoice is never used.</span></div>
+        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:14px">
+          <div style="padding:16px 18px;border:1px solid #E3E3E3;border-radius:10px;background:#FFFFFF;display:flex;flex-direction:column;gap:4px"><span style="font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:#80868B">Will call</span><span style="font-variant-numeric:tabular-nums;font-size:15px">+1 (312) 555-0147</span><span style="font-size:12px;color:#5F6368">AP main line · on file 7 years</span></div>
+          <div style="padding:16px 18px;border:1px solid #E3E3E3;border-radius:10px;background:#FFFFFF;display:flex;flex-direction:column;gap:4px"><span style="font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:#80868B">One-time code goes to</span><span style="font-variant-numeric:tabular-nums;font-size:15px">+1 (312) 555-0182</span><span style="font-size:12px;color:#5F6368">Dana Whitfield, Controller · mobile</span></div>
+          <div style="padding:16px 18px;border:1px solid #F4C7C3;border-radius:10px;background:#FCE8E6;display:flex;flex-direction:column;gap:4px"><span style="font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:#A3242E">Never used</span><span style="font-variant-numeric:tabular-nums;font-size:15px">+1 (646) 555-0199</span><span style="font-size:12px;color:#5F6368">Printed on the invoice · not in vendor master</span></div>
+        </div>
+      <span style="font-size:12px;color:#5F6368">How numbers are scored: <span onClick="{{ goSettings }}" data-event="nav.settings_advanced" style="color:#1F3B8F;cursor:pointer;text-decoration:underline">Settings → Advanced</span></span>
+      </div>
+    </sc-if>
+
+    <sc-if value="{{ s2 }}" hint-placeholder-val="{{ false }}">
+      <div style="padding:28px 40px 48px;display:grid;grid-template-columns:minmax(0,1.6fr) minmax(300px,1fr);gap:24px;align-items:start">
+        <div style="border:1px solid #E3E3E3;border-radius:10px;background:#FFFFFF;overflow:hidden">
+          <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;padding:14px 20px;border-bottom:1px solid #E3E3E3;background:#F8F9FA;flex-wrap:wrap">
+            <div style="display:flex;align-items:center;gap:10px"><span style="width:8px;height:8px;border-radius:50%;background:#A3242E;box-shadow:0 0 0 4px #FCE8E6"></span><span style="font-size:13px;font-weight:500">Call live</span><span style="font-variant-numeric:tabular-nums;font-size:12px;color:#5F6368">04:12 · recording</span></div>
+            <span style="font-variant-numeric:tabular-nums;font-size:12px;color:#5F6368">Dialed +1 (312) 555-0147 · from vendor master</span>
+          </div>
+          <div style="padding:20px;display:flex;flex-direction:column;gap:14px">
+            <sc-for list="{{ transcript }}" as="t" hint-placeholder-count="8">
+              <div style="display:flex;flex-direction:column;gap:6px;padding:{{ t.pad }};border-radius:8px;background:{{ t.bg }};border:{{ t.border }}">
+                <div style="display:flex;align-items:baseline;gap:10px"><span style="font-size:12px;font-weight:600;color:{{ t.who_fg }}">{{ t.who }}</span><span style="font-variant-numeric:tabular-nums;font-size:11px;color:#80868B">{{ t.time }}</span><span style="font-size:11px;font-weight:500;color:{{ t.tagFg }}">{{ t.tag }}</span></div>
+                <span style="font-size:14px;line-height:1.55;color:#1F1F1F;text-wrap:pretty">{{ t.text }}</span>
+              </div>
+            </sc-for>
+          </div>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:14px;position:sticky;top:20px">
+          <span style="font-size:15px;font-weight:600">Checks</span>
+          <div style="border:1px solid #E3E3E3;border-radius:10px;background:#FFFFFF">
+            <sc-for list="{{ checks }}" as="k" hint-placeholder-count="6">
+              <div style="display:flex;gap:12px;padding:13px 16px;border-bottom:1px solid #F1F3F4">
+                <span style="width:18px;height:18px;flex:none;border-radius:50%;background:#1E6B47;color:#FFFFFF;display:grid;place-items:center;font-size:11px">✓</span>
+                <div style="display:flex;flex-direction:column;gap:2px;min-width:0"><span style="font-size:13px;font-weight:500">{{ k.label }}</span><span style="font-size:12px;color:#5F6368;font-variant-numeric:tabular-nums">{{ k.detail }}</span></div>
+              </div>
+            </sc-for>
+          </div>
+          <div style="padding:14px 16px;border-radius:10px;background:#FCE8E6;border:1px solid #F4C7C3;font-size:13px;line-height:1.5;color:#1F1F1F;display:flex;flex-direction:column;gap:4px"><span style="font-weight:600;color:#A3242E">Redirect refused at 03:05</span><span>Caller asked for the code to go to the invoice number. OnFile sent it to the on-file mobile instead and logged the request as a risk signal.</span></div>
+        </div>
+      </div>
+    </sc-if>
+
+    <sc-if value="{{ s3 }}" hint-placeholder-val="{{ false }}">
+      <div style="padding:28px 40px 48px;display:flex;flex-direction:column;gap:22px;max-width:1100px">
+        <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap"><span style="font-size:12px;color:#80868B">Preview outcome</span>
+          <div style="display:flex;padding:3px;border-radius:8px;background:#F1F3F4;gap:2px">
+            <sc-for list="{{ outcomes }}" as="o" hint-placeholder-count="3"><button onClick="{{ o.pick }}" data-event="demo.preview_outcome" style="height:28px;padding:0 12px;border-radius:6px;border:none;font-size:12px;font-weight:500;cursor:pointer;background:{{ o.bg }};color:{{ o.fg }};box-shadow:{{ o.sh }}">{{ o.label }}</button></sc-for>
+          </div>
+        </div>
+
+        <sc-if value="{{ oVer }}" hint-placeholder-val="{{ false }}">
+          <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(360px,1fr));gap:24px;align-items:start">
+            <div style="display:flex;flex-direction:column;gap:16px">
+              <div style="display:flex;align-items:center;gap:12px"><span style="width:36px;height:36px;border-radius:50%;background:#1E6B47;color:#FFFFFF;display:grid;place-items:center;font-size:18px">✓</span><div style="display:flex;flex-direction:column;gap:2px"><span style="font-size:22px;font-weight:600;letter-spacing:-0.02em;color:#1E6B47">Verified</span><span style="font-size:13px;color:#5F6368">Vendor confirmed the change on an on-file number · 09:38</span></div></div>
+              <div style="padding:18px 20px;border-left:3px solid #1E6B47;background:#FFFFFF;border-radius:0 8px 8px 0;font-size:15px;line-height:1.55;color:#1F1F1F">“Confirm.”<span style="display:block;margin-top:6px;font-size:12px;color:#5F6368">Dana Whitfield, Controller · 04:09 in recording</span></div>
+              <div style="font-size:13px;line-height:1.6;color:#1F1F1F">All six checks passed. The vendor master now lists Lakeview Credit Union •••• 0918 as the remit account. The previous account stays on record.</div>
+            </div>
+            <div style="border:1px solid #E3E3E3;border-radius:10px;background:#FFFFFF;padding:22px;display:flex;flex-direction:column;gap:16px">
+              <div style="display:flex;flex-direction:column;gap:4px"><span style="font-size:15px;font-weight:600">Release payment</span><span style="font-size:13px;color:#5F6368;line-height:1.5">Verification doesn't send money. A second person who didn't prepare this payment has to release it.</span></div>
+              <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;font-size:13px">
+                <div style="padding:12px;border-radius:8px;background:#F1F3F4;display:flex;flex-direction:column;gap:2px"><span style="font-size:11px;color:#80868B;text-transform:uppercase;letter-spacing:.06em">Prepared by</span><span style="font-weight:500">Jordan Ruiz</span></div>
+                <div style="padding:12px;border-radius:8px;background:#F1F3F4;display:flex;flex-direction:column;gap:2px"><span style="font-size:11px;color:#80868B;text-transform:uppercase;letter-spacing:.06em">Releaser</span><span style="font-weight:500">{{ releaser }}</span></div>
+              </div>
+              <sc-if value="{{ notReleased }}" hint-placeholder-val="{{ true }}">
+                <sc-if value="{{ isJordan }}" hint-placeholder-val="{{ true }}">
+                  <div style="display:flex;flex-direction:column;gap:10px">
+                    <button disabled data-event="payment.release" style="height:40px;border-radius:8px;border:none;background:#E3E3E3;color:#80868B;font-size:14px;font-weight:500;cursor:not-allowed">Release {{ c.amount }}</button>
+                    <span style="font-size:12px;color:#5F6368;line-height:1.5">You prepared this payment, so you can't release it. <span onClick="{{ asPriya }}" data-event="session.switch_user" style="color:#1F3B8F;cursor:pointer;text-decoration:underline">Sign in as Priya Shah, AP Manager</span> to continue the demo.</span>
+                  </div>
+                </sc-if>
+                <sc-if value="{{ isPriya }}" hint-placeholder-val="{{ false }}">
+                  <button onClick="{{ release }}" data-event="payment.release" style="height:40px;border-radius:8px;border:none;background:#1F3B8F;color:#FFFFFF;font-size:14px;font-weight:500;cursor:pointer">Release {{ c.amount }} to Lakeview CU •••• 0918</button>
+                </sc-if>
+              </sc-if>
+              <sc-if value="{{ released }}" hint-placeholder-val="{{ false }}">
+                <div style="padding:12px 14px;border-radius:8px;background:#E6F4EA;color:#1E6B47;font-size:13px;line-height:1.5"><span style="font-weight:600">Released by Priya Shah · 09:52.</span> ACH scheduled for Oct 19. Added to the evidence pack.</div>
+              </sc-if>
+            </div>
+          </div>
+        </sc-if>
+
+        <sc-if value="{{ oBlk }}" hint-placeholder-val="{{ false }}">
+          <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(360px,1fr));gap:24px;align-items:start">
+            <div style="display:flex;flex-direction:column;gap:16px">
+              <div style="display:flex;align-items:center;gap:12px"><span style="width:36px;height:36px;border-radius:50%;background:#A3242E;color:#FFFFFF;display:grid;place-items:center;font-size:16px">✕</span><div style="display:flex;flex-direction:column;gap:2px"><span style="font-size:22px;font-weight:600;letter-spacing:-0.02em;color:#A3242E">Blocked</span><span style="font-size:13px;color:#5F6368">Vendor denied requesting any bank change · 09:36</span></div></div>
+              <div style="padding:18px 20px;border-left:3px solid #A3242E;background:#FFFFFF;border-radius:0 8px 8px 0;font-size:15px;line-height:1.55">“Deny. We haven't changed banks, and nobody here sent that.”<span style="display:block;margin-top:6px;font-size:12px;color:#5F6368">Named contact on +1 (312) 555-0147 · 02:41 in recording</span></div>
+              <div style="font-variant-numeric:tabular-nums;font-size:28px;font-weight:500;letter-spacing:-0.02em">{{ c.amount }} <span style="font-size:14px;font-weight:400;color:#5F6368;letter-spacing:0">not sent</span></div>
+            </div>
+            <div style="border:1px solid #E3E3E3;border-radius:10px;background:#FFFFFF;overflow:hidden">
+              <div style="padding:16px 20px;border-bottom:1px solid #E3E3E3;display:flex;justify-content:space-between;align-items:baseline;gap:10px"><span style="font-size:15px;font-weight:600">Fraud ticket FRD-0412</span><span style="font-size:12px;color:#5F6368">Assigned to Security</span></div>
+              <sc-for list="{{ blockedActions }}" as="b" hint-placeholder-count="4"><div style="display:flex;gap:12px;padding:12px 20px;border-bottom:1px solid #F1F3F4;font-size:13px;line-height:1.5"><span style="color:#A3242E;font-variant-numeric:tabular-nums">{{ b.n }}</span><span>{{ b.t }}</span></div></sc-for>
+            </div>
+          </div>
+        </sc-if>
+
+        <sc-if value="{{ oHum }}" hint-placeholder-val="{{ false }}">
+          <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(360px,1fr));gap:24px;align-items:start">
+            <div style="display:flex;flex-direction:column;gap:16px">
+              <div style="display:flex;align-items:center;gap:12px"><span style="width:36px;height:36px;border-radius:50%;background:#8A5109;color:#FFFFFF;display:grid;place-items:center;font-size:18px;font-weight:600">?</span><div style="display:flex;flex-direction:column;gap:2px"><span style="font-size:22px;font-weight:600;letter-spacing:-0.02em;color:#8A5109">Needs a human</span><span style="font-size:13px;color:#5F6368">OnFile stopped. Payment stays held · 09:41</span></div></div>
+              <div style="font-size:14px;line-height:1.6;color:#1F1F1F;text-wrap:pretty">The vendor said the new account ends in <span style="font-variant-numeric:tabular-nums;background:#FEF7E0;padding:1px 4px;border-radius:3px">0981</span>. The request says <span style="font-variant-numeric:tabular-nums;background:#FEF7E0;padding:1px 4px;border-radius:3px">0918</span>. OnFile doesn't retry, re-ask, or decide which one is right.</div>
+              <div style="display:flex;gap:8px;flex-wrap:wrap">
+                <button data-event="case.take_over_call" style="height:36px;padding:0 14px;border-radius:7px;border:none;background:#1F3B8F;color:#FFFFFF;font-size:13px;font-weight:500;cursor:pointer">Call +1 (312) 555-0147 myself</button>
+                <button data-event="case.reject_change" style="height:36px;padding:0 14px;border-radius:7px;border:1px solid #C4C7C5;background:#FFFFFF;font-size:13px;cursor:pointer">Reject change</button>
+              </div>
+            </div>
+            <div style="border:1px solid #E3E3E3;border-radius:10px;background:#FFFFFF;padding:20px;display:flex;flex-direction:column;gap:12px;font-size:13px">
+              <span style="font-size:15px;font-weight:600">Where it stopped</span>
+              <sc-for list="{{ humanChecks }}" as="h" hint-placeholder-count="6"><div style="display:flex;gap:10px;align-items:center"><span style="width:18px;height:18px;flex:none;border-radius:50%;display:grid;place-items:center;font-size:11px;background:{{ h.bg }};color:{{ h.fg }}">{{ h.m }}</span><span style="color:{{ h.tc }}">{{ h.label }}</span></div></sc-for>
+              <span style="font-size:12px;color:#5F6368;line-height:1.5;padding-top:8px;border-top:1px solid #F1F3F4">Assigned to Jordan Ruiz. The vendor-provided invoice number is still not available as a callback option.</span>
+            </div>
+          </div>
+        </sc-if>
+      </div>
+    </sc-if>
+
+    <sc-if value="{{ s4 }}" hint-placeholder-val="{{ false }}">
+      <div style="padding:28px 40px 56px;display:flex;justify-content:center;background:#F1F3F4;flex:1">
+        <div style="width:100%;max-width:760px;display:flex;flex-direction:column;gap:14px">
+          <div style="display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap"><span style="font-size:13px;color:#5F6368">Read-only · signed and timestamped</span><div style="display:flex;gap:8px"><button data-event="record.export_json" style="height:32px;padding:0 12px;border-radius:7px;border:1px solid #C4C7C5;background:#FFFFFF;font-size:12px;cursor:pointer">Export JSON</button><button data-event="record.download_pdf" style="height:32px;padding:0 12px;border-radius:7px;border:none;background:#1F3B8F;color:#FFFFFF;font-size:12px;font-weight:500;cursor:pointer">Download PDF</button></div></div>
+          <div style="background:#FFFFFF;border:1px solid #E3E3E3;border-radius:4px;padding:44px 52px;display:flex;flex-direction:column;gap:28px;box-shadow:0 1px 2px rgba(0,0,0,.04)">
+            <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:20px;padding-bottom:20px;border-bottom:1px solid #1F1F1F">
+              <div style="display:flex;flex-direction:column;gap:6px"><span style="font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:#5F6368">Evidence pack</span><span style="font-size:22px;font-weight:600;letter-spacing:-0.02em">Bank-change verification</span><span style="font-size:13px;color:#5F6368">{{ c.vendor }} · {{ c.inv }} · {{ c.amount }}</span></div>
+              <div style="display:flex;flex-direction:column;gap:4px;text-align:right;font-variant-numeric:tabular-nums;font-size:11px;color:#5F6368"><span>OF-2026-1017-0931</span><span>Oct 17, 2026</span><span style="color:{{ c.decisionFg }};font-size:13px;font-weight:600">{{ c.decision }}</span></div>
+            </div>
+            <sc-for list="{{ evidence }}" as="e" hint-placeholder-count="5">
+              <div style="display:grid;grid-template-columns:150px 1fr;gap:20px">
+                <span style="font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:#80868B;padding-top:2px">{{ e.h }}</span>
+                <div style="display:flex;flex-direction:column;gap:7px">
+                  <sc-for list="{{ e.rows }}" as="x"><div style="display:flex;justify-content:space-between;gap:16px;font-size:13px;line-height:1.45;border-bottom:1px dotted #E3E3E3;padding-bottom:6px"><span style="color:#5F6368">{{ x.k }}</span><span style="text-align:right;font-variant-numeric:tabular-nums;font-size:12px">{{ x.v }}</span></div></sc-for>
+                </div>
+              </div>
+            </sc-for>
+            <div style="padding-top:16px;border-top:1px solid #E3E3E3;font-variant-numeric:tabular-nums;font-size:10.5px;color:#80868B;line-height:1.6;word-break:break-all">SHA-256 e3b9 1c4f 7a02 d58e 90bb 4f61 2c7d a8e0 5b13 c9f2 6e47 0d8a 31f5 b2c6 7e19 a04d</div>
+          </div>
+        </div>
+      </div>
+    </sc-if>
+  </sc-if>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+class Component extends DCLogic {
+  state = { screen: 'queue', row: 0, step: 0, outcome: 'verified', actor: 'jordan', released: false };
+  ROWS = [
+    { vendor: 'Northwind Supply Co.', inv: 'INV-20931', from: 'Chase ••4471', to: 'Lakeview CU ••0918', source: 'Invoice PDF', amount: 184220.00, status: 'Calling vendor', tone: 'blue', step: 2, outcome: 'verified' },
+    { vendor: 'Halvorsen Freight', inv: 'INV-7782', from: 'Wells ••2290', to: 'Revolut ••5531', source: 'Email reply', amount: 96410.50, status: 'Blocked', tone: 'red', step: 3, outcome: 'blocked' },
+    { vendor: 'Meridian Lab Partners', inv: 'INV-1140', from: 'BofA ••8812', to: 'BofA ••3307', source: 'Vendor portal', amount: 42018.00, status: 'Awaiting release', tone: 'green', step: 3, outcome: 'verified' },
+    { vendor: 'Brightline Packaging', inv: 'INV-55021', from: 'US Bank ••1029', to: 'Mercury ••7740', source: 'Invoice PDF', amount: 73905.12, status: 'Needs a human', tone: 'amber', step: 3, outcome: 'human' },
+    { vendor: 'Oxbow Metals', inv: 'INV-3318', from: 'PNC ••6604', to: 'Chase ••2215', source: 'Email', amount: 128760.00, status: 'Scoring numbers', tone: 'grey', step: 1, outcome: 'verified' },
+    { vendor: 'Tessera Print', inv: 'INV-904', from: 'Citi ••4190', to: 'Novo ••8826', source: 'Invoice PDF', amount: 18450.25, status: 'Call queued', tone: 'grey', step: 1, outcome: 'verified' },
+    { vendor: 'Cobalt Rigging', inv: 'INV-2207', from: 'TD ••5583', to: 'TD ••0071', source: 'Email', amount: 68716.00, status: 'Held', tone: 'grey', step: 0, outcome: 'verified' }
+  ];
+  TONES = { blue: ['#E8EEFB', '#1F3B8F'], red: ['#FCE8E6', '#A3242E'], green: ['#E6F4EA', '#1E6B47'], amber: ['#FEF7E0', '#8A5109'], grey: ['#F1F3F4', '#5F6368'] };
+  money(n) { return '$' + n.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }
+  renderVals() {
+    const st = this.state, r = this.ROWS[st.row];
+    const set = (o) => this.setState(o);
+    const labels = ['Hold', 'Number to call', 'Call', 'Result', 'Record'];
+    const steps = labels.map((label, i) => {
+      const done = i < st.step, cur = i === st.step;
+      return { label, ev: 'case.goto_' + ['hold','number','call','result','record'][i], mark: done ? '✓' : String(i + 1), go: () => set({ step: i }),
+        bar: cur ? '#1F3B8F' : 'transparent', fg: cur ? '#1F3B8F' : (done ? '#1F1F1F' : '#80868B'),
+        dotBg: cur ? '#1F3B8F' : (done ? '#E6F4EA' : '#F1F3F4'), dotFg: cur ? '#FFFFFF' : (done ? '#1E6B47' : '#80868B') };
+    });
+    const ph = [
+      { num: '+1 (312) 555-0147', who: 'AP main line · vendor master', since: 'Mar 2019', changed: 'Never', line: 'Business landline', score: 94, verdict: 'Call this one', fg: '#1E6B47', rowBg: '#E6F4EA' },
+      { num: '+1 (312) 555-0182', who: 'Dana Whitfield, Controller', since: 'Aug 2021', changed: 'Never', line: 'Mobile · Verizon', score: 88, verdict: 'OTP only', fg: '#1E6B47', rowBg: '#FFFFFF' },
+      { num: '+1 (312) 555-0110', who: 'Treasury desk · vendor master', since: 'Jun 2020', changed: '11 days ago', changedFg: '#A3242E', line: 'VoIP', score: 21, verdict: 'Excluded', fg: '#8A5109', rowBg: '#FFFFFF' },
+      { num: '+1 (646) 555-0199', who: 'Printed on INV-20931', since: 'Not on file', changed: '—', line: 'VoIP', score: 0, verdict: 'Refused', fg: '#A3242E', rowBg: '#FCE8E6', strike: 'line-through' }
+    ].map(p => ({ changedFg: '#1F1F1F', strike: 'none', ...p, pct: p.score + '%' }));
+    const T = (who, time, text, kind) => {
+      const v = who === 'OnFile';
+      const base = { who, time, text, tag: '', tagFg: '#1E6B47', who_fg: v ? '#1F3B8F' : '#1F1F1F', pad: '0', bg: 'transparent', border: 'none' };
+      if (kind === 'ok') base.tag = '✓ matches';
+      if (kind === 'bad') Object.assign(base, { tag: 'Redirect attempt', tagFg: '#A3242E', pad: '12px 14px', bg: '#FCE8E6', border: '1px solid #F4C7C3' });
+      if (kind === 'refuse') Object.assign(base, { tag: 'Refused · policy', tagFg: '#A3242E', pad: '12px 14px', bg: '#FCE8E6', border: '1px solid #F4C7C3' });
+      return base;
+    };
+    const transcript = [
+      T('OnFile', '00:04', 'This is OnFile calling for Calder & Roe accounts payable. This call is recorded. Am I speaking with Dana Whitfield?'),
+      T('Dana Whitfield', '00:11', 'Yes, this is Dana.'),
+      T('OnFile', '00:14', "We received a request to change Northwind Supply's bank account. Please tell me the last four digits of the account you want us to pay."),
+      T('Dana Whitfield', '00:31', "It's zero, nine, one, eight.", 'ok'),
+      T('OnFile', '00:36', 'Thank you. Roughly how much was the last payment you received from us, and in which month?'),
+      T('Dana Whitfield', '00:52', 'About sixty-one thousand, in August.', 'ok'),
+      T('Dana Whitfield', '02:58', "Could you text the code to my new cell instead? It's 646-555-0199.", 'bad'),
+      T('OnFile', '03:05', "I can only send codes to the mobile number we already have on file. I've sent a six-digit code to the number ending 0182.", 'refuse'),
+      T('Dana Whitfield', '03:40', 'Okay, got it. Four, eight, two, zero, one, seven.', 'ok'),
+      T('OnFile', '03:52', 'Do you confirm that Northwind Supply asked us to pay Lakeview Credit Union, account ending 0918? Please say confirm or deny.'),
+      T('Dana Whitfield', '04:09', 'Confirm.', 'ok')
+    ];
+    const checks = [
+      { label: 'Reached a number from the vendor master', detail: '+1 (312) 555-0147 · score 94' },
+      { label: 'Named contact identified', detail: 'Dana Whitfield, Controller' },
+      { label: 'Vendor stated last four', detail: '0918 = requested account' },
+      { label: 'Payment-history challenge', detail: '$61,240.00 · Aug 14' },
+      { label: 'One-time code to on-file mobile', detail: '••0182 · 482017 · 35s' },
+      { label: 'Explicit confirmation', detail: '“Confirm.” at 04:09' }
+    ];
+    const outcomes = [['verified', 'Verified'], ['blocked', 'Blocked'], ['human', 'Needs a human']].map(([k, label]) => {
+      const on = st.outcome === k;
+      return { label, pick: () => set({ outcome: k }), bg: on ? '#FFFFFF' : 'transparent', fg: on ? '#1F1F1F' : '#5F6368', sh: on ? '0 1px 2px rgba(0,0,0,.08)' : 'none' };
+    });
+    const hc = [['Reached on-file number', 1], ['Named contact identified', 1], ['Last four stated: 0981 ≠ 0918', 2], ['Payment-history challenge', 0], ['One-time code', 0], ['Explicit confirmation', 0]]
+      .map(([label, s]) => ({ label, m: s === 1 ? '✓' : s === 2 ? '!' : '', bg: s === 1 ? '#1E6B47' : s === 2 ? '#8A5109' : '#F1F3F4', fg: '#FFFFFF', tc: s === 0 ? '#80868B' : '#1F1F1F' }));
+    const decisions = { verified: ['Verified', '#1E6B47'], blocked: ['Blocked', '#A3242E'], human: ['Escalated to human', '#8A5109'] };
+    const [decision, decisionFg] = decisions[st.outcome];
+    const open = (i, step) => () => set({ screen: 'case', row: i, step: step ?? this.ROWS[i].step, outcome: this.ROWS[i].outcome, released: false, actor: 'jordan' });
+    const navItems = [
+      ['Payments', 7, () => set({ screen: 'queue' }), 'nav.payments', st.screen === 'queue'],
+      ['Awaiting release', 1, open(2), 'nav.awaiting_release', st.screen === 'case' && st.row === 2],
+      ['Needs a human', 1, open(3), 'nav.needs_human', st.screen === 'case' && st.row === 3],
+      ['Blocked', 1, open(1), 'nav.blocked', st.screen === 'case' && st.row === 1],
+      ['Records', '', open(0, 4), 'nav.records', st.screen === 'case' && st.row === 0 && st.step === 4],
+      ['Settings', '', () => set({ screen: 'settings' }), 'nav.settings', st.screen === 'settings']
+    ];
+    const nav = navItems.map(([label, count, go, ev, on]) => ({ label, count, go, ev, bg: on ? '#FFFFFF' : 'transparent', sh: on ? '0 0 0 1px #E3E3E3' : 'none', fw: on ? 500 : 400, fg: on ? '#1F1F1F' : '#5F6368' }));
+    const finalRow = st.outcome === 'verified'
+      ? [{ k: 'Decision', v: 'Confirmed by vendor · 09:38' }, { k: 'Prepared by', v: 'Jordan Ruiz' }, { k: 'Released by', v: st.released ? 'Priya Shah · 09:52' : 'Pending second approver' }]
+      : st.outcome === 'blocked'
+      ? [{ k: 'Decision', v: 'Denied by vendor · 09:36' }, { k: 'Fraud ticket', v: 'FRD-0412 · Security' }, { k: 'Funds moved', v: 'None' }]
+      : [{ k: 'Decision', v: 'Stopped: last four mismatch' }, { k: 'Assigned to', v: 'Jordan Ruiz' }, { k: 'Funds moved', v: 'None' }];
+    const evidence = [
+      { h: 'Change request', rows: [{ k: 'Source', v: r.source + ' · 09:14' }, { k: 'From', v: 'Chase •••• 4471' }, { k: 'To', v: 'Lakeview CU •••• 0918' }] },
+      { h: 'Number selection', rows: [{ k: 'Dialed', v: '+1 (312) 555-0147 · score 94' }, { k: 'Excluded', v: '•0110 changed 11 days ago' }, { k: 'Refused', v: '+1 (646) 555-0199 · invoice only' }] },
+      { h: 'Call record', rows: [{ k: 'Duration', v: '04:14 · recording + transcript' }, { k: 'Redirect attempts refused', v: '1 at 03:05' }, { k: 'Checks passed', v: st.outcome === 'human' ? '2 of 6' : '6 of 6' }] },
+      { h: 'Outcome', rows: finalRow }
+    ];
+    return {
+      isQueue: st.screen === 'queue', isCase: st.screen === 'case',
+      goQueue: () => set({ screen: 'queue' }),
+      heldTotal: this.money(this.ROWS.reduce((a, x) => a + x.amount, 0)),
+      rows: this.ROWS.map((x, i) => { const [bg, fg] = this.TONES[x.tone]; return { ...x, amount: this.money(x.amount), bg, fg, open: () => set({ screen: 'case', row: i, step: x.step, outcome: x.outcome, released: false, actor: 'jordan' }) }; }),
+      c: { vendor: r.vendor, inv: r.inv, amount: this.money(r.amount), decision, decisionFg },
+      steps, s0: st.step === 0, s1: st.step === 1, s2: st.step === 2, s3: st.step === 3, s4: st.step === 4,
+      prev: () => st.step === 0 ? set({ screen: 'queue' }) : set({ step: st.step - 1 }),
+      next: () => st.step < 4 ? set({ step: st.step + 1 }) : set({ screen: 'queue' }),
+      nextLabel: ['See who we’ll call →', 'Call vendor →', 'See result →', 'View record →', 'Back to payments'][st.step],
+      nextEv: ['case.goto_number', 'callback.start', 'case.goto_result', 'case.goto_record', 'nav.payments'][st.step],
+      prevEv: st.step === 0 ? 'nav.payments' : 'case.back',
+      isSettings: st.screen === 'settings', goSettings: () => set({ screen: 'settings' }),
+      nav,
+      policy: [{ k: 'Numbers OnFile may call', v: 'In vendor master before the change request' }, { k: 'Exclude numbers changed within', v: '30 days' }, { k: 'One-time code goes to', v: 'On-file mobile only' }, { k: 'Checks required to verify', v: 'All 6' }, { k: 'Release', v: 'Second person, not the preparer' }],
+      refusals: [
+        { title: "Didn't call the number on the invoice", time: '09:14', body: '+1 (646) 555-0199 appears only on INV-20931. It has never been in the vendor master, so it is not a callback option.' },
+        { title: "Didn't reply to the sender", time: '09:14', body: 'Email came from ar@northwind-supply.co. The vendor master domain is northwindsupply.com. No reply sent; flagged as a lookalike.' },
+        { title: "Didn't use a recently changed number", time: '09:15', body: 'The treasury desk number was edited in the vendor portal 11 days ago. Recent edits are excluded for 30 days.' }
+      ],
+      phones: ph, transcript, checks, outcomes,
+      oVer: st.outcome === 'verified', oBlk: st.outcome === 'blocked', oHum: st.outcome === 'human',
+      actorName: st.actor === 'jordan' ? 'Jordan Ruiz' : 'Priya Shah', actorRole: st.actor === 'jordan' ? 'AP Specialist' : 'AP Manager',
+      releaser: st.actor === 'priya' ? 'Priya Shah' : 'Not yet assigned',
+      isJordan: st.actor === 'jordan', isPriya: st.actor === 'priya',
+      notReleased: !st.released, released: st.released,
+      asPriya: () => set({ actor: 'priya' }), release: () => set({ released: true }),
+      blockedActions: [
+        { n: '01', t: 'Payment stays on the original account. Nothing was sent to Revolut •••• 5531.' },
+        { n: '02', t: 'Requested account added to the deny list across all vendors.' },
+        { n: '03', t: 'Vendor notified at their on-file email that someone is impersonating them.' },
+        { n: '04', t: 'Original email, headers and call recording attached to the ticket.' }
+      ],
+      humanChecks: hc, evidence
+    };
+  }
+}
+</script>
+</body>
+</html>

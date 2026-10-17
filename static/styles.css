@@ -1,0 +1,158 @@
+:root {
+  --bg: #f3efe3;
+  --ink: #1f2a2a;
+  --card: #fffaf0;
+  --primary: #065f46;
+  --accent: #b45309;
+  --muted: #5f6b6b;
+  --danger: #9f1239;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: "Avenir Next", "Trebuchet MS", sans-serif;
+  color: var(--ink);
+  background:
+    radial-gradient(circle at 10% 10%, #fef3c7 0, transparent 35%),
+    radial-gradient(circle at 85% 20%, #fde68a 0, transparent 30%),
+    linear-gradient(160deg, #f3efe3 0%, #e8e1ce 100%);
+  min-height: 100vh;
+}
+
+.app-shell {
+  width: min(1100px, 92vw);
+  margin: 32px auto;
+  display: grid;
+  gap: 20px;
+}
+
+.hero {
+  background: linear-gradient(120deg, #fffbeb 0%, #fef3c7 100%);
+  border: 1px solid #fcd34d;
+  border-radius: 18px;
+  padding: 20px;
+  animation: rise 500ms ease-out;
+}
+
+.hero h1 {
+  margin: 0 0 8px;
+  letter-spacing: 0.5px;
+}
+
+.hero p {
+  margin: 0;
+  color: var(--muted);
+}
+
+.row-grid {
+  display: grid;
+  gap: 16px;
+}
+
+.panel {
+  background: var(--card);
+  border-radius: 18px;
+  border: 1px solid #d6d3c7;
+  padding: 18px;
+  box-shadow: 0 8px 22px rgba(51, 65, 85, 0.08);
+  animation: rise 650ms ease-out;
+}
+
+.panel h2 {
+  margin-top: 0;
+}
+
+.fields {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+  margin-bottom: 14px;
+}
+
+label {
+  display: grid;
+  gap: 6px;
+  font-size: 14px;
+}
+
+input {
+  width: 100%;
+  padding: 10px 12px;
+  border-radius: 10px;
+  border: 1px solid #c2c7b7;
+  background: #fff;
+  color: var(--ink);
+}
+
+input:focus {
+  outline: 2px solid #f59e0b;
+  border-color: #f59e0b;
+}
+
+button {
+  border: 0;
+  border-radius: 999px;
+  padding: 10px 16px;
+  cursor: pointer;
+  font-weight: 700;
+  transition: transform 120ms ease, opacity 120ms ease;
+}
+
+button:hover {
+  transform: translateY(-1px);
+}
+
+button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.btn-primary {
+  background: var(--primary);
+  color: #ecfdf5;
+}
+
+.btn-secondary {
+  background: var(--accent);
+  color: #fff7ed;
+}
+
+.btn-dark {
+  background: #1f2937;
+  color: #f9fafb;
+}
+
+.status {
+  margin-top: 10px;
+  font-weight: 600;
+}
+
+.status.error {
+  color: var(--danger);
+}
+
+.hint {
+  margin: 0 0 12px;
+  color: var(--muted);
+}
+
+@keyframes rise {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (max-width: 840px) {
+  .fields {
+    grid-template-columns: 1fr;
+  }
+}

@@ -1,0 +1,475 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet data-dc-atomics><link rel="preconnect" href="https://fonts.googleapis.com"><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet"><style>*{box-sizing:border-box}body{margin:0;background:#F8F9FA;color:#1F1F1F;font-family:'Inter',system-ui,-apple-system,'Segoe UI',sans-serif;font-size:15px;line-height:1.5;-webkit-font-smoothing:antialiased}a{color:#1F3B8F;text-decoration:none}a:hover{color:#152B6B}button{font-family:inherit}</style></helmet>
+<div style="min-height:100vh;background:#F8F9FA;padding-bottom:72px">
+  <header style="height:64px;background:#FFFFFF;border-bottom:1px solid #E3E3E3;display:flex;align-items:center;padding:0 32px;gap:8px">
+    <div onClick="{{ go.home }}" data-event="nav.home" style="display:flex;align-items:center;gap:10px;font-weight:600;font-size:18px;margin-right:24px;cursor:pointer"><span style="width:32px;height:32px;border-radius:10px;background:#1F3B8F;display:inline-block"></span>OnFile</div>
+    <sc-for list="{{ tabs }}" as="t" hint-placeholder-count="3"><div onClick="{{ t.go }}" data-event="{{ t.ev }}" style="padding:8px 16px;border-radius:999px;font-weight:500;cursor:pointer;background:{{ t.bg }};color:{{ t.fg }}">{{ t.label }}</div></sc-for>
+    <span style="flex:1"></span>
+    <span style="color:#5F6368;font-size:14px;margin-right:12px">Granite Ridge Builders</span>
+    <span style="width:36px;height:36px;border-radius:50%;background:#E8EEFB;color:#1F3B8F;display:flex;align-items:center;justify-content:center;font-weight:600;font-size:13px">{{ avatar }}</span>
+  </header>
+
+  <sc-if value="{{ is.flow }}" hint-placeholder-val="{{ false }}">
+    <div style="padding:32px 40px 56px;max-width:1200px;margin:0 auto">
+      <div style="font-size:30px;font-weight:500;letter-spacing:-.01em;line-height:1.25">Simplified flow</div>
+      <p style="color:#5F6368;margin:6px 0 0">One question per screen. The system handles the rest; details live in Settings → Advanced.</p>
+      <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:20px;margin-top:28px">
+        <sc-for list="{{ flowNodes }}" as="f" hint-placeholder-count="9"><div onClick="{{ f.go }}" style="background:#FFFFFF;border:1px solid #E3E3E3;border-radius:14px;padding:16px 18px;cursor:pointer" style-hover="border-color:#1F3B8F"><div style="font-weight:600">{{ f.t }}</div><div style="font-size:13px;color:#5F6368">{{ f.d }}</div></div></sc-for>
+      </div>
+    </div>
+  </sc-if>
+
+  <sc-if value="{{ is.home }}" hint-placeholder-val="{{ true }}">
+    <div style="padding:32px 40px 56px;max-width:1040px;margin:0 auto">
+      <div style="display:flex;justify-content:space-between;align-items:center;gap:16px;flex-wrap:wrap">
+        <div><div style="font-size:30px;font-weight:500;letter-spacing:-.01em;line-height:1.25">Payments</div><p style="color:#5F6368;margin:6px 0 0">Friday, Oct 17 · {{ needCount }}</p></div>
+        <span style="display:inline-flex;align-items:center;gap:6px;padding:4px 12px;border-radius:999px;font-size:13px;font-weight:500;background:#E6F4EA;color:#1E6B47;white-space:nowrap"><span style="width:8px;height:8px;border-radius:50%;background:#1E6B47"></span>48 paid this week, nothing unusual</span>
+      </div>
+      <sc-if value="{{ hasFlash }}" hint-placeholder-val="{{ false }}">
+        <div style="margin-top:20px;display:flex;align-items:center;justify-content:space-between;gap:16px;padding:14px 20px;border-radius:16px;background:{{ flash.bg }};color:{{ flash.fg }};font-weight:500"><span>{{ flash.text }}</span><span onClick="{{ clearFlash }}" style="cursor:pointer;font-size:13px;opacity:.8">Dismiss</span></div>
+      </sc-if>
+      <sc-if value="{{ hasNeeds }}" hint-placeholder-val="{{ true }}">
+        <div style="margin:28px 0 12px;font-size:13px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:#5F6368">Needs you</div>
+        <div style="background:#FFFFFF;border:1px solid #E3E3E3;border-radius:16px;overflow:hidden">
+          <sc-for list="{{ needs }}" as="n" hint-placeholder-count="2">
+            <div onClick="{{ n.go }}" style="display:grid;grid-template-columns:1fr auto;gap:16px;align-items:center;padding:20px 24px;border-top:{{ n.bt }};cursor:pointer" style-hover="background:#F8F9FA">
+              <div><div style="font-weight:600;font-size:16px">{{ n.t }} <span style="margin-left:12px">{{ n.amt }}</span></div><div style="color:#5F6368;margin-top:2px">{{ n.d }}</div></div>
+              <span data-event="{{ n.ev }}" style="display:inline-flex;align-items:center;height:36px;padding:0 16px;border-radius:999px;font-weight:600;font-size:14px;background:#1F3B8F;color:#FFFFFF">{{ n.btn }}</span>
+            </div>
+          </sc-for>
+        </div>
+      </sc-if>
+      <div style="margin:28px 0 12px;font-size:13px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:#5F6368">Happening now</div>
+      <div style="background:#FFFFFF;border:1px solid #E3E3E3;border-radius:16px;overflow:hidden">
+        <div onClick="{{ go.call }}" data-event="open_call" style="display:grid;grid-template-columns:1fr auto;gap:16px;align-items:center;padding:20px 24px;cursor:pointer" style-hover="background:#F8F9FA">
+          <div><div style="font-weight:600;font-size:16px">Ridgeway HVAC <span style="margin-left:12px">$26,040</span></div><div style="color:#5F6368;margin-top:2px">Changed their bank account · calling them now to confirm · no action needed yet</div></div>
+          <span style="display:inline-flex;align-items:center;gap:6px;padding:4px 12px;border-radius:999px;font-size:13px;font-weight:500;background:#E8EEFB;color:#1F3B8F;white-space:nowrap"><span style="width:8px;height:8px;border-radius:50%;background:#1F3B8F"></span>Calling</span>
+        </div>
+      </div>
+      <div style="margin:28px 0 12px;font-size:13px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:#5F6368">On hold</div>
+      <div style="background:#FFFFFF;border:1px solid #E3E3E3;border-radius:16px;overflow:hidden">
+        <div onClick="{{ go.verify }}" style="display:grid;grid-template-columns:1fr auto;gap:16px;align-items:center;padding:20px 24px;cursor:pointer" style-hover="background:#F8F9FA">
+          <div><div style="font-weight:600;font-size:16px">Harbor Steel Supply <span style="margin-left:12px">$48,920</span></div><div style="color:#5F6368;margin-top:2px">Vendor said they did not change their account · payment stopped · see what happened</div></div>
+          <span style="display:inline-flex;align-items:center;gap:6px;padding:4px 12px;border-radius:999px;font-size:13px;font-weight:500;background:#FCE8E6;color:#A3242E;white-space:nowrap"><span style="width:8px;height:8px;border-radius:50%;background:#A3242E"></span>On hold</span>
+        </div>
+      </div>
+      <p style="font-size:13px;color:#80868B;margin-top:24px">7 invoices this morning had no changes and were paid on normal terms. <a onClick="{{ toggle.paid }}" style="cursor:pointer">{{ paidLabel }}</a></p>
+      <sc-if value="{{ open.paid }}" hint-placeholder-val="{{ false }}">
+        <div style="background:#FFFFFF;border:1px solid #E3E3E3;border-radius:16px;padding:8px 24px;margin-top:8px">
+          <sc-for list="{{ paid }}" as="p" hint-placeholder-count="7"><div style="display:flex;justify-content:space-between;gap:16px;padding:10px 0;border-top:{{ p.bt }};font-size:14px"><span>{{ p.v }}</span><span style="color:#5F6368;font-variant-numeric:tabular-nums">{{ p.a }}</span></div></sc-for>
+        </div>
+      </sc-if>
+    </div>
+  </sc-if>
+
+  <sc-if value="{{ is.call }}" hint-placeholder-val="{{ false }}">
+    <div style="padding:32px 40px 56px;max-width:1040px;margin:0 auto">
+      <div onClick="{{ go.home }}" style="display:inline-flex;align-items:center;gap:6px;color:#5F6368;font-size:14px;margin-bottom:20px;cursor:pointer">‹ Payments</div>
+      <div style="display:flex;justify-content:space-between;align-items:center;gap:16px;flex-wrap:wrap">
+        <div><div style="font-size:30px;font-weight:500;letter-spacing:-.01em;line-height:1.25">Calling Ridgeway HVAC · $26,040</div><p style="color:#5F6368;margin:6px 0 0">On their number on file since 2022, (585) 555-0181 · no action needed yet</p></div>
+        <span style="display:inline-flex;align-items:center;gap:6px;padding:4px 12px;border-radius:999px;font-size:13px;font-weight:500;background:#E8EEFB;color:#1F3B8F;white-space:nowrap"><span style="width:8px;height:8px;border-radius:50%;background:#1F3B8F"></span>On the call · 1:48</span>
+      </div>
+      <div style="display:grid;grid-template-columns:minmax(0,1fr) 340px;gap:24px;align-items:start;margin-top:24px">
+        <div style="background:#FFFFFF;border:1px solid #E3E3E3;border-radius:16px;padding:24px">
+          <div style="font-size:18px;font-weight:600;margin-bottom:12px">Live call</div>
+          <sc-for list="{{ live }}" as="m" hint-placeholder-count="7">
+            <div style="display:grid;grid-template-columns:72px 1fr;gap:12px;padding:8px 0;font-size:14px"><span style="color:#80868B;font-size:13px;padding-top:8px">{{ m.who }}</span><div style="background:{{ m.bg }};border:{{ m.bd }};border-radius:14px;padding:10px 14px">{{ m.text }}<sc-if value="{{ m.hasNote }}"><div style="margin-top:6px;font-size:12px;font-weight:600;color:{{ m.noteFg }}">{{ m.note }}</div></sc-if></div></div>
+          </sc-for>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:16px">
+          <div style="background:#FFFFFF;border:1px solid #E3E3E3;border-radius:16px;padding:16px 20px">
+            <div style="font-size:15px;font-weight:600;margin-bottom:12px">So far</div>
+            <sc-for list="{{ liveSteps }}" as="s" hint-placeholder-count="5"><div style="display:grid;grid-template-columns:28px 1fr;gap:14px;padding:10px 0;border-top:{{ s.bt }}"><span style="width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:700;background:{{ s.bg }};color:{{ s.fg }}">{{ s.ic }}</span><span style="font-size:14px;color:{{ s.tc }};padding-top:3px">{{ s.t }}</span></div></sc-for>
+          </div>
+          <div style="background:#FCE8E6;border-radius:16px;padding:16px 20px;font-size:14px"><div style="font-weight:600;color:#A3242E">We didn't switch numbers</div><div style="color:#5F6368;margin-top:4px">The caller asked us to text a different phone. We only send codes to the mobile on file, so we did.</div></div>
+        </div>
+      </div>
+    </div>
+  </sc-if>
+
+  <sc-if value="{{ is.verify }}" hint-placeholder-val="{{ false }}">
+    <div style="padding:32px 40px 56px;max-width:1040px;margin:0 auto">
+      <div onClick="{{ go.home }}" style="display:inline-flex;align-items:center;gap:6px;color:#5F6368;font-size:14px;margin-bottom:20px;cursor:pointer">‹ Payments</div>
+      <div style="display:flex;justify-content:space-between;align-items:center;gap:16px;flex-wrap:wrap">
+        <div><div style="font-size:30px;font-weight:500;letter-spacing:-.01em;line-height:1.25">Harbor Steel Supply · $48,920</div><p style="color:#5F6368;margin:6px 0 0">Invoice 2041 · due Nov 2 · vendor since 2023</p></div>
+        <span style="display:inline-flex;align-items:center;gap:6px;padding:4px 12px;border-radius:999px;font-size:13px;font-weight:500;background:#FCE8E6;color:#A3242E;white-space:nowrap"><span style="width:8px;height:8px;border-radius:50%;background:#A3242E"></span>Payment on hold</span>
+      </div>
+      <div style="background:#FFFFFF;border:1px solid #E3E3E3;border-radius:16px;padding:24px;margin-top:24px">
+        <div style="font-size:18px;font-weight:600;margin-bottom:12px">What changed on this invoice</div>
+        <div style="display:grid;grid-template-columns:1fr 32px 1fr;gap:12px;align-items:center">
+          <div style="border:1px solid #E3E3E3;border-radius:12px;padding:14px 16px"><div style="font-size:12px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:#80868B;margin-bottom:6px">On file since 2023</div><div><strong>First Commerce Bank</strong>, Buffalo NY</div><div style="color:#5F6368">Account ending 4471</div></div>
+          <div style="text-align:center;color:#80868B;font-size:20px">→</div>
+          <div style="border:1px solid #A3242E;background:#FCE8E6;border-radius:12px;padding:14px 16px"><div style="font-size:12px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:#80868B;margin-bottom:6px">Invoice asks for</div><div><strong>Pacific Rim Credit Union</strong>, Las Vegas NV</div><div style="color:#5F6368">Account ending 9036 · new mailing address</div></div>
+        </div>
+        <div style="border-top:1px solid #E3E3E3;margin-top:20px;padding-top:12px">
+          <div onClick="{{ toggle.email }}" style="cursor:pointer;color:#1F3B8F;font-weight:500;display:flex;align-items:center;gap:8px"><span style="font-size:20px;line-height:1;display:inline-block;transition:transform .15s;transform:{{ rot.email }}">›</span>See the email that asked for the change</div>
+          <sc-if value="{{ open.email }}" hint-placeholder-val="{{ false }}"><div style="margin-top:14px;color:#5F6368;font-size:14px">“Please note we have updated our banking details effective immediately. Kindly remit payment for INV-2041 and all future invoices to the new account below.”<br><span style="font-size:13px;color:#80868B">Sent from <strong>harborsteel-supply.com</strong> — one letter different from the vendor's real domain.</span></div></sc-if>
+        </div>
+      </div>
+      <div style="background:#FFFFFF;border:1px solid #E3E3E3;border-radius:16px;padding:24px;margin-top:20px">
+        <div style="font-size:18px;font-weight:600;margin-bottom:12px">What we did</div>
+        <sc-for list="{{ didSteps }}" as="s" hint-placeholder-count="4"><div style="display:grid;grid-template-columns:28px 1fr;gap:14px;padding:12px 0;border-top:{{ s.bt }}"><span style="width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:700;background:{{ s.bg }};color:{{ s.fg }}">{{ s.ic }}</span><div><div style="font-weight:500">{{ s.t }}</div><div style="color:#5F6368;font-size:14px">{{ s.d }}</div></div></div></sc-for>
+        <div style="border-top:1px solid #E3E3E3;margin-top:20px;padding-top:12px">
+          <div onClick="{{ toggle.call }}" style="cursor:pointer;color:#1F3B8F;font-weight:500;display:flex;align-items:center;gap:8px"><span style="font-size:20px;line-height:1;display:inline-block;transition:transform .15s;transform:{{ rot.call }}">›</span>Listen to or read the call (1 min 42 s)</div>
+          <sc-if value="{{ open.call }}" hint-placeholder-val="{{ false }}"><div style="margin-top:14px">
+            <sc-for list="{{ harborCall }}" as="m" hint-placeholder-count="6"><div style="display:grid;grid-template-columns:72px 1fr;gap:12px;padding:8px 0;font-size:14px"><span style="color:#80868B;font-size:13px;padding-top:8px">{{ m.who }}</span><div style="background:{{ m.bg }};border-radius:14px;padding:10px 14px">{{ m.text }}</div></div></sc-for>
+          </div></sc-if>
+        </div>
+      </div>
+      <div style="background:#FCE8E6;border-radius:16px;padding:24px;margin-top:20px;display:flex;justify-content:space-between;align-items:center;gap:16px;flex-wrap:wrap">
+        <div><div style="font-size:18px;font-weight:600;margin-bottom:4px">This looks like fraud. The payment is on hold.</div><p style="color:#5F6368;margin:0">Nothing was sent. Dana has been told your team will follow up.</p></div>
+        <button onClick="{{ go.onhold }}" data-event="open_ticket" style="height:44px;padding:0 24px;border-radius:999px;font-weight:600;font-size:15px;background:#A3242E;border:1px solid #A3242E;color:#FFFFFF;cursor:pointer">See next steps</button>
+      </div>
+    </div>
+  </sc-if>
+
+  <sc-if value="{{ is.decide }}" hint-placeholder-val="{{ false }}">
+    <div style="padding:32px 40px 56px;max-width:1040px;margin:0 auto">
+      <div onClick="{{ go.home }}" style="display:inline-flex;align-items:center;gap:6px;color:#5F6368;font-size:14px;margin-bottom:20px;cursor:pointer">‹ Payments</div>
+      <div style="font-size:30px;font-weight:500;letter-spacing:-.01em;line-height:1.25">We couldn't reach Summit Glass &amp; Glazing</div>
+      <p style="font-size:17px;margin:8px 0 0;max-width:720px">They asked to be paid into a new account ($19,870). Their usual phone number is disconnected, so we can't confirm it's really them. The payment is held until you choose.</p>
+      <div style="display:grid;grid-template-columns:minmax(0,1fr) 340px;gap:24px;align-items:start;margin-top:28px">
+        <div style="display:flex;flex-direction:column;gap:12px">
+          <sc-for list="{{ options }}" as="o" hint-placeholder-count="4">
+            <div onClick="{{ o.pick }}" data-event="{{ o.ev }}" style="border:1px solid {{ o.bc }};box-shadow:{{ o.sh }};border-radius:14px;padding:18px 20px;background:#FFFFFF;cursor:pointer" style-hover="border-color:#1F3B8F">
+              <div style="display:flex;justify-content:space-between;gap:12px;align-items:flex-start"><div style="font-weight:600;font-size:16px">{{ o.t }}</div><sc-if value="{{ o.rec }}"><span style="display:inline-flex;padding:4px 12px;border-radius:999px;font-size:13px;font-weight:500;background:#E8EEFB;color:#1F3B8F;white-space:nowrap">Recommended</span></sc-if></div>
+              <div style="color:#5F6368;font-size:14px;margin-top:2px">{{ o.d }}</div>
+              <sc-if value="{{ o.expanded }}"><div onClick="{{ stop }}" style="margin-top:14px;display:flex;flex-direction:column;gap:12px">
+                <div><div style="font-size:13px;color:#5F6368;margin-bottom:6px">{{ o.fieldLabel }}</div><div style="height:44px;border:1px solid #C4C7C5;border-radius:10px;padding:0 14px;display:flex;align-items:center;background:#FFFFFF;color:#80868B">{{ o.ph }}</div></div>
+                <div style="display:flex;gap:12px"><button onClick="{{ o.confirm }}" style="height:36px;padding:0 16px;border-radius:999px;font-weight:600;font-size:14px;background:#1F3B8F;border:1px solid #1F3B8F;color:#FFFFFF;cursor:pointer">{{ o.cta }}</button><button onClick="{{ o.cancel }}" style="height:36px;padding:0 16px;border-radius:999px;font-weight:600;font-size:14px;background:transparent;border:1px solid transparent;color:#1F3B8F;cursor:pointer">Cancel</button></div>
+              </div></sc-if>
+            </div>
+          </sc-for>
+        </div>
+        <div style="background:#FFFFFF;border:1px solid #E3E3E3;border-radius:16px;padding:16px 20px">
+          <div style="display:grid;grid-template-columns:120px 1fr;gap:10px 16px">
+            <span style="color:#5F6368">Invoice</span><span>2036 · $19,870</span>
+            <span style="color:#5F6368">Vendor since</span><span>2024 · 3 invoices paid</span>
+            <span style="color:#5F6368">Held for</span><span>5 hours</span>
+            <span style="color:#5F6368">Change</span><span>New bank account and new mailing address</span>
+          </div>
+          <div style="border-top:1px solid #E3E3E3;margin-top:20px;padding-top:12px">
+            <div onClick="{{ toggle.why }}" style="cursor:pointer;color:#1F3B8F;font-weight:500;display:flex;align-items:center;gap:8px"><span style="font-size:20px;line-height:1;display:inline-block;transition:transform .15s;transform:{{ rot.why }}">›</span>Why we couldn't verify</div>
+            <sc-if value="{{ open.why }}" hint-placeholder-val="{{ false }}"><div style="margin-top:14px;color:#5F6368;font-size:14px">The phone number on file (585) 555-0133 is disconnected. We don't dial numbers that appear on an invoice, because that's where fraudsters put their own.</div></sc-if>
+          </div>
+        </div>
+      </div>
+    </div>
+  </sc-if>
+
+  <sc-if value="{{ is.approve }}" hint-placeholder-val="{{ false }}">
+    <div style="padding:32px 40px 56px;max-width:1040px;margin:0 auto">
+      <div onClick="{{ go.home }}" style="display:inline-flex;align-items:center;gap:6px;color:#5F6368;font-size:14px;margin-bottom:20px;cursor:pointer">‹ Payments</div>
+      <div style="font-size:30px;font-weight:500;letter-spacing:-.01em;line-height:1.25">Approve $12,350 to Delta Fabrication</div>
+      <p style="font-size:17px;margin:8px 0 0">First payment to their new account at Citizens Bank (ending 7784).</p>
+      <div style="display:grid;grid-template-columns:minmax(0,1fr) 340px;gap:24px;align-items:start;margin-top:28px">
+        <div style="background:#FFFFFF;border:1px solid #E3E3E3;border-radius:16px;padding:24px">
+          <div style="display:flex;align-items:center;gap:12px;margin-bottom:16px"><span style="width:36px;height:36px;flex:none;border-radius:50%;display:flex;align-items:center;justify-content:center;background:#E6F4EA;color:#1E6B47;font-weight:700">✓</span>
+            <div><div style="font-weight:600;font-size:16px">Everything checked out</div><div style="color:#5F6368">We called Delta on their known number. Elena Ruiz confirmed the new account and entered the code we texted her.</div></div></div>
+          <div style="border-top:1px solid #E3E3E3;margin-top:20px;padding-top:12px">
+            <div onClick="{{ toggle.checklist }}" style="cursor:pointer;color:#1F3B8F;font-weight:500;display:flex;align-items:center;gap:8px"><span style="font-size:20px;line-height:1;display:inline-block;transition:transform .15s;transform:{{ rot.checklist }}">›</span>See the full checklist</div>
+            <sc-if value="{{ open.checklist }}" hint-placeholder-val="{{ false }}"><div style="margin-top:14px">
+              <sc-for list="{{ deltaChecks }}" as="c" hint-placeholder-count="5"><div style="display:grid;grid-template-columns:28px 1fr;gap:14px;padding:12px 0;border-top:{{ c.bt }}"><span style="width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:700;background:#E6F4EA;color:#1E6B47">✓</span><span style="font-weight:500;padding-top:3px">{{ c.t }}</span></div></sc-for>
+              <a onClick="{{ go.record }}" style="display:inline-block;margin-top:10px;cursor:pointer">Open the verification record</a>
+            </div></sc-if>
+          </div>
+          <div style="margin-top:16px"><div style="font-size:13px;color:#5F6368;margin-bottom:6px">Note (optional)</div><input placeholder="e.g. vendor moved banks in September" style="width:100%;height:44px;border:1px solid #C4C7C5;border-radius:10px;padding:0 14px;font:inherit;color:#1F1F1F;background:#FFFFFF"></div>
+          <div onClick="{{ toggleAck }}" style="display:flex;align-items:center;gap:10px;margin-top:16px;cursor:pointer"><span style="width:20px;height:20px;border-radius:5px;border:2px solid #1F3B8F;flex:none;display:flex;align-items:center;justify-content:center;color:#FFFFFF;font-size:12px;font-weight:700;background:{{ ackBg }}">{{ ackMark }}</span><span>I've reviewed this and I'm not the person who verified it</span></div>
+          <div style="display:flex;gap:12px;align-items:center;margin-top:24px;flex-wrap:wrap">
+            <button onClick="{{ approve }}" data-event="release" style="height:44px;padding:0 24px;border-radius:999px;font-weight:600;font-size:15px;border:1px solid {{ apBg }};background:{{ apBg }};color:{{ apFg }};cursor:{{ apCur }}">Approve $12,350</button>
+            <button onClick="{{ decline }}" data-event="reject" style="height:44px;padding:0 24px;border-radius:999px;font-weight:600;font-size:15px;border:1px solid #C4C7C5;background:#FFFFFF;color:#1F1F1F;cursor:pointer">Decline</button>
+            <button onClick="{{ go.home }}" data-event="not_now" style="height:44px;padding:0 24px;border-radius:999px;font-weight:600;font-size:15px;border:1px solid transparent;background:transparent;color:#1F3B8F;cursor:pointer">Not now</button>
+          </div>
+        </div>
+        <div style="background:#FFFFFF;border:1px solid #E3E3E3;border-radius:16px;padding:16px 20px">
+          <div style="display:grid;grid-template-columns:120px 1fr;gap:10px 16px">
+            <span style="color:#5F6368">To</span><span>Delta Fabrication</span>
+            <span style="color:#5F6368">Amount</span><span>$12,350.00</span>
+            <span style="color:#5F6368">Account</span><span>Citizens Bank ····7784 <span style="display:inline-flex;padding:2px 10px;border-radius:999px;font-size:13px;font-weight:500;background:#F1F3F4;color:#5F6368;margin-left:4px">new</span></span>
+            <span style="color:#5F6368">Verified by</span><span>OnFile, with Elena Ruiz</span>
+            <span style="color:#5F6368">Requested by</span><span>Priya Natarajan</span>
+            <span style="color:#5F6368">Approving as</span><span>Marcus Lee, Controller</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </sc-if>
+
+  <sc-if value="{{ is.onhold }}" hint-placeholder-val="{{ false }}">
+    <div style="padding:32px 40px 56px;max-width:1040px;margin:0 auto">
+      <div onClick="{{ go.home }}" style="display:inline-flex;align-items:center;gap:6px;color:#5F6368;font-size:14px;margin-bottom:20px;cursor:pointer">‹ Payments</div>
+      <div style="display:flex;align-items:center;gap:16px;padding:20px 24px;border-radius:16px;background:#A3242E;color:#FFFFFF;flex-wrap:wrap">
+        <div style="flex:1"><div style="font-size:24px;font-weight:500;line-height:1.25">Payment on hold</div><p style="color:rgba(255,255,255,.85);margin:6px 0 0">Harbor Steel Supply · $48,920 · the vendor said they did not change their account</p></div>
+        <span style="display:inline-flex;padding:4px 12px;border-radius:999px;font-size:13px;font-weight:500;background:rgba(255,255,255,.18);color:#FFFFFF">Nothing was sent</span>
+      </div>
+      <div style="display:grid;grid-template-columns:minmax(0,1fr) 340px;gap:24px;align-items:start;margin-top:24px">
+        <div style="background:#FFFFFF;border:1px solid #E3E3E3;border-radius:16px;padding:24px">
+          <div style="font-size:18px;font-weight:600;margin-bottom:12px">Next steps</div>
+          <p style="color:#5F6368;margin:0 0 12px">Assigned to Priya Natarajan. Tick each one as you go. {{ todoProgress }}</p>
+          <sc-for list="{{ todos }}" as="d" hint-placeholder-count="4"><div onClick="{{ d.flip }}" style="display:flex;align-items:center;gap:10px;margin-top:16px;cursor:pointer"><span style="width:20px;height:20px;border-radius:5px;border:2px solid #1F3B8F;flex:none;display:flex;align-items:center;justify-content:center;color:#FFFFFF;font-size:12px;font-weight:700;background:{{ d.bg }}">{{ d.mark }}</span><span style="color:{{ d.fg }};text-decoration:{{ d.td }}">{{ d.t }}</span></div></sc-for>
+          <div style="display:flex;gap:12px;align-items:center;margin-top:24px;flex-wrap:wrap">
+            <button onClick="{{ go.recordHarbor }}" data-event="open_evidence_pack" style="height:44px;padding:0 24px;border-radius:999px;font-weight:600;font-size:15px;border:1px solid #1F3B8F;background:#1F3B8F;color:#FFFFFF;cursor:pointer">Download the record</button>
+            <button onClick="{{ go.home }}" data-event="back_to_inbox" style="height:44px;padding:0 24px;border-radius:999px;font-weight:600;font-size:15px;border:1px solid #C4C7C5;background:#FFFFFF;color:#1F1F1F;cursor:pointer">Back to payments</button>
+          </div>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:16px">
+          <div style="background:#FFFFFF;border:1px solid #E3E3E3;border-radius:16px;padding:16px 20px"><div style="font-size:15px;font-weight:600;margin-bottom:8px">Who knows</div><p style="color:#5F6368;font-size:14px;margin:0">Priya Natarajan (AP) · Marcus Lee (Controller) · Dana Whitfield at Harbor Steel, by phone</p></div>
+          <div style="background:#FFFFFF;border:1px solid #E3E3E3;border-radius:16px;padding:16px 20px"><div style="font-size:15px;font-weight:600;margin-bottom:8px">Need to pay this anyway?</div><p style="color:#5F6368;font-size:14px;margin:0">A controller can reopen this, but the vendor will be called again and must confirm the new account first.</p>
+            <sc-if value="{{ notAsked }}" hint-placeholder-val="{{ true }}"><button onClick="{{ askController }}" data-event="controller_override" style="margin-top:12px;height:36px;padding:0 16px;border-radius:999px;font-weight:600;font-size:14px;border:1px solid #C4C7C5;background:#FFFFFF;color:#1F1F1F;cursor:pointer">Ask a controller</button></sc-if>
+            <sc-if value="{{ asked }}" hint-placeholder-val="{{ false }}"><div style="margin-top:12px;display:inline-flex;padding:4px 12px;border-radius:999px;font-size:13px;font-weight:500;background:#E8EEFB;color:#1F3B8F">Sent to Marcus Lee</div></sc-if>
+          </div>
+        </div>
+      </div>
+    </div>
+  </sc-if>
+
+  <sc-if value="{{ is.record }}" hint-placeholder-val="{{ false }}">
+    <div style="padding:32px 40px 56px;max-width:1040px;margin:0 auto">
+      <div onClick="{{ recordBack }}" style="display:inline-flex;align-items:center;gap:6px;color:#5F6368;font-size:14px;margin-bottom:20px;cursor:pointer">‹ Back</div>
+      <div style="display:flex;justify-content:space-between;align-items:center;gap:16px;flex-wrap:wrap">
+        <div><div style="font-size:30px;font-weight:500;letter-spacing:-.01em;line-height:1.25">Verification record</div><p style="color:#5F6368;margin:6px 0 0">{{ rec.sub }}</p></div>
+        <div style="display:flex;align-items:center;gap:12px"><span style="display:inline-flex;align-items:center;gap:6px;padding:4px 12px;border-radius:999px;font-size:13px;font-weight:500;background:{{ rec.chipBg }};color:{{ rec.chipFg }}"><span style="width:8px;height:8px;border-radius:50%;background:{{ rec.chipFg }}"></span>{{ rec.result }}</span><button data-event="export_pdf" style="height:36px;padding:0 16px;border-radius:999px;font-weight:600;font-size:14px;border:1px solid #C4C7C5;background:#FFFFFF;color:#1F1F1F;cursor:pointer">Download PDF</button></div>
+      </div>
+      <div style="display:grid;grid-template-columns:minmax(0,1fr) 340px;gap:24px;align-items:start;margin-top:24px">
+        <div style="background:#FFFFFF;border:1px solid #E3E3E3;border-radius:16px;padding:24px">
+          <sc-for list="{{ rec.sections }}" as="sec" hint-placeholder-count="3">
+            <div style="font-size:18px;font-weight:600;margin:{{ sec.mt }} 0 12px">{{ sec.h }}</div>
+            <div style="display:grid;grid-template-columns:160px 1fr;gap:10px 16px">
+              <sc-for list="{{ sec.rows }}" as="r"><span style="color:#5F6368">{{ r.k }}</span><span>{{ r.v }}</span></sc-for>
+            </div>
+          </sc-for>
+          <div style="border-top:1px solid #E3E3E3;margin-top:20px;padding-top:12px">
+            <div onClick="{{ toggle.tech }}" style="cursor:pointer;color:#1F3B8F;font-weight:500;display:flex;align-items:center;gap:8px"><span style="font-size:20px;line-height:1;display:inline-block;transition:transform .15s;transform:{{ rot.tech }}">›</span>Technical details for auditors</div>
+            <sc-if value="{{ open.tech }}" hint-placeholder-val="{{ false }}"><div style="margin-top:14px;color:#5F6368;font-size:14px">{{ rec.tech }}</div></sc-if>
+          </div>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:16px">
+          <div style="background:#FFFFFF;border:1px solid #E3E3E3;border-radius:16px;padding:16px 20px"><div style="font-size:15px;font-weight:600;margin-bottom:8px">What this covers</div><p style="color:#5F6368;font-size:14px;margin:0">Your insurer's “callback verification of vendor payment changes” — yes, documented.<br><br>Change control for vendor bank details, with two people signing off.</p></div>
+          <sc-if value="{{ rec.isDelta }}" hint-placeholder-val="{{ true }}"><button onClick="{{ go.approve }}" data-event="proceed_to_release" style="width:100%;height:44px;padding:0 24px;border-radius:999px;font-weight:600;font-size:15px;border:1px solid #1F3B8F;background:#1F3B8F;color:#FFFFFF;cursor:pointer">Go to approval</button></sc-if>
+        </div>
+      </div>
+    </div>
+  </sc-if>
+
+  <sc-if value="{{ is.vendors }}" hint-placeholder-val="{{ false }}">
+    <div style="padding:32px 40px 56px;max-width:1040px;margin:0 auto">
+      <div style="display:flex;justify-content:space-between;align-items:center;gap:16px;flex-wrap:wrap"><div><div style="font-size:30px;font-weight:500;letter-spacing:-.01em;line-height:1.25">Vendors</div><p style="color:#5F6368;margin:6px 0 0">38 vendors · contact details we use to confirm changes</p></div><button style="height:44px;padding:0 24px;border-radius:999px;font-weight:600;font-size:15px;border:1px solid #1F3B8F;background:#1F3B8F;color:#FFFFFF;cursor:pointer">Add vendor</button></div>
+      <div style="background:#FFFFFF;border:1px solid #E3E3E3;border-radius:16px;overflow:hidden;margin-top:24px">
+        <sc-for list="{{ vendors }}" as="v" hint-placeholder-count="5">
+          <div onClick="{{ v.go }}" style="display:grid;grid-template-columns:1fr auto;gap:16px;align-items:center;padding:20px 24px;border-top:{{ v.bt }};cursor:pointer" style-hover="background:#F8F9FA">
+            <div><div style="font-weight:600;font-size:16px">{{ v.t }}</div><div style="color:#5F6368;margin-top:2px">{{ v.d }}<span style="color:#A3242E">{{ v.warn }}</span>{{ v.d2 }}</div></div>
+            <span style="display:inline-flex;align-items:center;gap:6px;padding:4px 12px;border-radius:999px;font-size:13px;font-weight:500;white-space:nowrap;background:{{ v.bg }};color:{{ v.fg }}"><sc-if value="{{ v.dot }}"><span style="width:8px;height:8px;border-radius:50%;background:{{ v.fg }}"></span></sc-if>{{ v.chip }}</span>
+          </div>
+        </sc-for>
+      </div>
+    </div>
+  </sc-if>
+
+  <sc-if value="{{ is.anySettings }}" hint-placeholder-val="{{ false }}">
+    <div style="padding:32px 40px 56px;max-width:1040px;margin:0 auto">
+      <div style="font-size:30px;font-weight:500;letter-spacing:-.01em;line-height:1.25">Settings</div>
+      <div style="display:grid;grid-template-columns:220px minmax(0,1fr);gap:32px;align-items:start;margin-top:24px">
+        <div style="display:flex;flex-direction:column">
+          <sc-for list="{{ snav }}" as="s" hint-placeholder-count="5"><div onClick="{{ s.go }}" style="padding:10px 16px;border-radius:999px;font-weight:500;cursor:pointer;background:{{ s.bg }};color:{{ s.fg }}">{{ s.label }}</div></sc-for>
+        </div>
+        <sc-if value="{{ is.settings }}" hint-placeholder-val="{{ false }}">
+          <div style="display:flex;flex-direction:column;gap:16px">
+            <sc-for list="{{ settingsCards }}" as="card" hint-placeholder-count="3">
+              <div style="background:#FFFFFF;border:1px solid #E3E3E3;border-radius:16px;padding:24px">
+                <div style="font-size:18px;font-weight:600;margin-bottom:12px">{{ card.h }}</div>
+                <sc-for list="{{ card.rows }}" as="r">
+                  <div style="display:flex;justify-content:space-between;align-items:center;gap:24px;padding:{{ r.pad }};border-top:{{ r.bt }}">
+                    <div><div style="font-weight:500">{{ r.t }}</div><div style="color:#5F6368;font-size:14px;margin-top:2px">{{ r.d }}</div></div>
+                    <sc-if value="{{ r.isToggle }}"><span onClick="{{ r.flip }}" style="width:40px;height:22px;border-radius:999px;position:relative;flex:none;cursor:{{ r.cur }};background:{{ r.tb }}"><span style="position:absolute;top:3px;left:{{ r.tl }};width:16px;height:16px;border-radius:50%;background:#FFFFFF;transition:left .15s"></span></span></sc-if>
+                    <sc-if value="{{ r.isBtn }}"><button style="height:36px;padding:0 16px;border-radius:999px;font-weight:600;font-size:14px;border:1px solid #C4C7C5;background:#FFFFFF;color:#1F1F1F;cursor:pointer">{{ r.btn }}</button></sc-if>
+                  </div>
+                </sc-for>
+              </div>
+            </sc-for>
+          </div>
+        </sc-if>
+        <sc-if value="{{ is.advanced }}" hint-placeholder-val="{{ false }}">
+          <div style="display:flex;flex-direction:column;gap:16px">
+            <div style="background:#E8EEFB;border-radius:16px;padding:16px 20px;color:#5F6368;font-size:14px">For admins. These rules run automatically; everyday users never see them. Changing them needs a controller.</div>
+            <div style="background:#FFFFFF;border:1px solid #E3E3E3;border-radius:16px;padding:24px">
+              <div style="font-size:18px;font-weight:600;margin-bottom:12px">Verification rules</div>
+              <sc-for list="{{ rules }}" as="r" hint-placeholder-count="4">
+                <div style="display:flex;justify-content:space-between;align-items:center;gap:24px;padding:{{ r.pad }};border-top:{{ r.bt }}">
+                  <div><div style="font-weight:500">{{ r.t }}</div><div style="color:#5F6368;font-size:14px;margin-top:2px">{{ r.d }}</div></div>
+                  <div style="display:flex;align-items:center;gap:10px;flex:none"><span style="font-size:12px;color:#80868B">{{ r.lock }}</span><span style="width:40px;height:22px;border-radius:999px;position:relative;background:#1F3B8F;opacity:.6"><span style="position:absolute;top:3px;left:21px;width:16px;height:16px;border-radius:50%;background:#FFFFFF"></span></span></div>
+                </div>
+              </sc-for>
+              <div style="border-top:1px solid #E3E3E3;margin-top:20px;padding-top:12px">
+                <div onClick="{{ toggle.trust }}" style="cursor:pointer;color:#1F3B8F;font-weight:500;display:flex;align-items:center;gap:8px"><span style="font-size:20px;line-height:1;display:inline-block;transition:transform .15s;transform:{{ rot.trust }}">›</span>How a phone number is trusted</div>
+                <sc-if value="{{ open.trust }}" hint-placeholder-val="{{ false }}"><div style="margin-top:14px;color:#5F6368;font-size:14px">Starts at 50. +1 per 90 days on file (max +25). −40 if added in the last 90 days. +10 landline or mobile, −25 internet phone, −30 call forwarding. +5 per supporting document (max +15). Trusted at 70 or more and 90+ days.</div></sc-if>
+              </div>
+            </div>
+            <div style="background:#FFFFFF;border:1px solid #E3E3E3;border-radius:16px;padding:24px">
+              <div style="font-size:18px;font-weight:600;margin-bottom:12px">Timing</div>
+              <div style="display:grid;grid-template-columns:160px 1fr;gap:10px 16px">
+                <span style="color:#5F6368">Start calling</span><span>10 minutes after an invoice arrives</span>
+                <span style="color:#5F6368">Retry window</span><span>3 attempts over 2 business days, then ask a person</span>
+                <span style="color:#5F6368">Review deadline</span><span>3 days, then escalate to the controller</span>
+                <span style="color:#5F6368">Hold tickets</span><span>Reviewed after 7 days</span>
+              </div>
+            </div>
+            <div style="background:#FFFFFF;border:1px solid #E3E3E3;border-radius:16px;padding:24px">
+              <div style="display:flex;justify-content:space-between;align-items:center;gap:16px;flex-wrap:wrap"><div style="font-size:18px;font-weight:600">Testing &amp; audit</div><span style="display:inline-flex;align-items:center;gap:6px;padding:4px 12px;border-radius:999px;font-size:13px;font-weight:500;background:#E6F4EA;color:#1E6B47"><span style="width:8px;height:8px;border-radius:50%;background:#1E6B47"></span>26 of 26 scenarios passing</span></div>
+              <p style="color:#5F6368;margin:8px 0 0;font-size:14px">Every verification is replayed against 26 fraud and edge-case scenarios after each rule change. Full traces, timings, and costs are available for auditors.</p>
+              <div style="display:flex;gap:12px;margin-top:16px;flex-wrap:wrap"><button data-event="open_prism_traces" style="height:36px;padding:0 16px;border-radius:999px;font-weight:600;font-size:14px;border:1px solid #C4C7C5;background:#FFFFFF;color:#1F1F1F;cursor:pointer">Open test results</button><button style="height:36px;padding:0 16px;border-radius:999px;font-weight:600;font-size:14px;border:1px solid #C4C7C5;background:#FFFFFF;color:#1F1F1F;cursor:pointer">Export audit log</button></div>
+            </div>
+            <div style="background:#FFFFFF;border:1px solid #E3E3E3;border-radius:16px;padding:24px">
+              <div style="font-size:18px;font-weight:600;margin-bottom:12px">Usage</div>
+              <div style="display:grid;grid-template-columns:160px 1fr;gap:10px 16px"><span style="color:#5F6368">This week</span><span>52 invoices checked · 4 vendor calls · about $0.06 per invoice</span></div>
+            </div>
+          </div>
+        </sc-if>
+      </div>
+    </div>
+  </sc-if>
+
+  <div style="position:fixed;left:0;right:0;bottom:0;background:#1F1F1F;color:#DDDDDD;font-size:13px;padding:10px 20px;display:flex;gap:6px;align-items:center;z-index:9;flex-wrap:nowrap;overflow-x:auto;white-space:nowrap;scrollbar-width:none">
+    <span style="margin-right:8px;color:#888888">Jump to:</span>
+    <sc-for list="{{ jumps }}" as="j" hint-placeholder-count="10"><span onClick="{{ j.go }}" style="padding:4px 10px;border-radius:999px;cursor:pointer;border:1px solid {{ j.bc }};color:{{ j.fg }}" style-hover="color:#FFFFFF;border-color:#888888">{{ j.label }}</span></sc-for>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+class Component extends DCLogic {
+  state = { screen: 'home', open: {}, ack: true, done: {}, flash: null, todos: [true, false, false, false], asked: false, notif: [true, true, false], expanded: null, recFor: 'delta' };
+  nav(screen, extra) { this.setState({ screen, expanded: null, ...(extra || {}) }); window.scrollTo(0, 0); }
+  renderVals() {
+    const st = this.state, set = o => this.setState(o);
+    const g = (s, extra) => () => this.nav(s, extra);
+    const go = { home: g('home'), call: g('call'), verify: g('verify'), decide: g('decide'), approve: g('approve'), onhold: g('onhold'), record: g('record', { recFor: 'delta' }), recordHarbor: g('record', { recFor: 'harbor' }), vendors: g('vendors'), settings: g('settings'), advanced: g('advanced'), flow: g('flow') };
+    const is = {}; ['flow','home','call','verify','decide','approve','onhold','record','vendors','settings','advanced'].forEach(k => is[k] = st.screen === k);
+    is.anySettings = is.settings || is.advanced;
+    const ids = ['email','call','why','checklist','tech','trust','paid'];
+    const open = {}, rot = {}, toggle = {};
+    ids.forEach(k => { open[k] = !!st.open[k]; rot[k] = open[k] ? 'rotate(90deg)' : 'none'; toggle[k] = () => set({ open: { ...st.open, [k]: !st.open[k] } }); });
+    const topOn = is.vendors ? 'vendors' : is.anySettings ? 'settings' : 'home';
+    const tabs = [['home','Payments'],['vendors','Vendors'],['settings','Settings']].map(([k,label]) => ({ label, go: go[k], ev: 'nav.' + k, bg: topOn === k ? '#E8EEFB' : 'transparent', fg: topOn === k ? '#1F3B8F' : '#5F6368' }));
+    const needsAll = [
+      { k: 'summit', t: 'Summit Glass & Glazing', amt: '$19,870', d: "Changed their bank account · we couldn't reach them on their usual number", btn: 'Decide', ev: 'decide', go: go.decide },
+      { k: 'delta', t: 'Delta Fabrication', amt: '$12,350', d: 'Changed their bank account · confirmed by phone with Elena Ruiz · ready for your approval', btn: 'Approve', ev: 'open_release', go: go.approve }
+    ];
+    const needs = needsAll.filter(n => !st.done[n.k]).map((n, i) => ({ ...n, bt: i ? '1px solid #E3E3E3' : '0' }));
+    const flashTones = { ok: ['#E6F4EA', '#1E6B47'], info: ['#E8EEFB', '#1F3B8F'], warn: ['#FEF7E0', '#8A5109'] };
+    const flash = st.flash ? { text: st.flash.text, bg: flashTones[st.flash.tone][0], fg: flashTones[st.flash.tone][1] } : { text: '', bg: '', fg: '' };
+    const finish = (k, text, tone) => this.nav('home', { done: { ...st.done, [k]: true }, flash: { text, tone } });
+    const optDefs = [
+      { k: 'request_callback', t: 'Ask Summit Glass to call us back', d: 'We email their known contact. When they call, we confirm the change with them.', rec: true, now: () => finish('summit', "We emailed Summit Glass's known contact. Payment stays held until they call back.", 'info') },
+      { k: 'call_w9_number', t: 'Try the number on their tax form instead', d: "A second number we have for them. You'll be asked to say why.", fieldLabel: 'Why use this number?', ph: 'e.g. W-9 on file from 2024, signed by owner', cta: 'Call this number', confirm: () => finish('summit', 'Calling Summit Glass on the number from their tax form. Your reason was saved to the record.', 'info') },
+      { k: 'manual_verify', t: "I've confirmed it myself", d: 'You spoke to them another way. Needs a note and a second person to approve.', fieldLabel: 'How did you confirm it?', ph: 'e.g. met their owner on site, checked a voided cheque', cta: 'Send for approval', confirm: () => finish('summit', 'Sent to Marcus Lee for a second approval.', 'info') },
+      { k: 'pay_on_file', t: 'Pay their old account instead', d: 'Ignore the change and pay the account on file.', now: () => finish('summit', "$19,870 will go to Summit Glass's account on file. The change request was closed.", 'ok') }
+    ];
+    const options = optDefs.map(o => ({ ...o, ev: o.k, rec: !!o.rec, expanded: st.expanded === o.k,
+      bc: o.rec || st.expanded === o.k ? '#1F3B8F' : '#E3E3E3', sh: o.rec || st.expanded === o.k ? 'inset 0 0 0 1px #1F3B8F' : 'none',
+      pick: () => o.now ? o.now() : set({ expanded: o.k }), cancel: () => set({ expanded: null }), confirm: o.confirm || (() => {}),
+      fieldLabel: o.fieldLabel || '', ph: o.ph || '', cta: o.cta || '' }));
+    const bub = (who, text, kind) => {
+      const agent = who === 'OnFile';
+      const m = { who, text, bg: agent ? '#E8EEFB' : '#F1F3F4', bd: '0', hasNote: false, note: '', noteFg: '#1E6B47' };
+      if (kind === 'ok') Object.assign(m, { hasNote: true, note: '✓ Matches our records' });
+      if (kind === 'ask') Object.assign(m, { bg: '#FCE8E6', bd: '1px solid #A3242E', hasNote: true, note: 'Asked to use a different number', noteFg: '#A3242E' });
+      if (kind === 'refuse') Object.assign(m, { hasNote: true, note: 'Kept to the number on file', noteFg: '#A3242E' });
+      return m;
+    };
+    const live = [
+      bub('OnFile', "Hi, this is the OnFile verification assistant calling for Granite Ridge Builders' accounts payable team. This call is recorded. Could I speak with someone in accounts receivable?"),
+      bub('Marco', 'Marco here, I handle billing.'),
+      bub('OnFile', 'We received invoice 2044 asking us to pay Ridgeway HVAC into a new account. Could you tell me the last four digits of the account you expect payment to?'),
+      bub('Marco', "Sure, it's 6120.", 'ok'),
+      bub('OnFile', "Thanks. I'm texting a six-digit code to the mobile we have on file for Ridgeway. Please read it back to me."),
+      bub('Marco', "I'm not near that phone. Can you send it to my cell, 702-555-0199?", 'ask'),
+      bub('OnFile', "I can only send it to the mobile we already have on file. I can wait, or call back at a time that suits you.", 'refuse')
+    ];
+    const S = (ic, t, tone, i) => { const c = { ok: ['#E6F4EA','#1E6B47'], info: ['#E8EEFB','#1F3B8F'], crit: ['#FCE8E6','#A3242E'], none: ['#F1F3F4','#80868B'] }[tone]; return { ic, t, bg: c[0], fg: c[1], tc: tone === 'none' ? '#80868B' : '#1F1F1F', bt: i ? '1px solid #E3E3E3' : '0' }; };
+    const liveSteps = [['✓','Called the number on file, not the one on the invoice','ok'],['✓','Marco confirmed the account ending 6120','ok'],['…','Waiting for the text-message code','info'],['','Question only the real vendor would know','none'],['','Final yes or no','none']].map((x,i)=>S(x[0],x[1],x[2],i));
+    const didSteps = [
+      { ic: '✓', t: 'Held the payment as soon as we saw the change', d: '9:08 am', tone: 'ok' },
+      { ic: '✓', t: "Called Harbor Steel on the number you've had on file for 3 years", d: '2:49 pm · not the new number on the invoice', tone: 'ok' },
+      { ic: '✕', t: 'Dana in Accounts Receivable said they did not change their bank account', d: '2:51 pm · she confirmed the account ending 4471 is still correct', tone: 'crit' }
+    ].map((s, i) => ({ ...S(s.ic, s.t, s.tone, i), d: s.d }));
+    const harborCall = [
+      ['OnFile', "Hi, this is the OnFile verification assistant calling for Granite Ridge Builders' accounts payable team. This call is recorded. Could I speak with someone in accounts receivable?"],
+      ['Dana', 'This is Dana in AR.'],
+      ['OnFile', 'We received invoice 2041 with a request to change the bank account we pay Harbor Steel into. Could you tell me the last four digits of the account you expect payment to?'],
+      ['Dana', "It's 4471. We haven't changed anything."],
+      ['OnFile', 'That matches our records. To confirm: Harbor Steel has not requested any change to its bank account?'],
+      ['Dana', 'Correct. We did not.']
+    ].map(([who, text]) => ({ who, text, bg: who === 'OnFile' ? '#E8EEFB' : '#F1F3F4' }));
+    const deltaChecks = ['Called the number on file, not the one on the invoice','Elena confirmed the account ending 7784','She answered a question only the real vendor would know','Text-message code entered correctly','Verified today · record saved'].map((t,i)=>({ t, bt: i ? '1px solid #E3E3E3' : '0' }));
+    const todoText = ['Hold all other open invoices from Harbor Steel for now','Report the new account to your bank','Let the insurance broker know','Ask Harbor Steel to check their email was not hacked'];
+    const todos = todoText.map((t, i) => { const on = st.todos[i]; return { t, bg: on ? '#1F3B8F' : '#FFFFFF', mark: on ? '✓' : '', fg: on ? '#5F6368' : '#1F1F1F', td: on ? 'line-through' : 'none', flip: () => { const a = st.todos.slice(); a[i] = !a[i]; set({ todos: a }); } }; });
+    const recs = {
+      delta: { sub: 'Delta Fabrication · Invoice 2039 · $12,350 · verified Oct 17, 2026', result: 'Verified', chipBg: '#E6F4EA', chipFg: '#1E6B47', isDelta: true,
+        sections: [
+          { h: 'The change', rows: [['Asked for by','Invoice 2039, emailed Oct 16 from billing@deltafab.com'],['Old account','Chase ····2210'],['New account','Citizens Bank ····7784']] },
+          { h: 'How we confirmed it', rows: [['Called','(585) 555-0128 — the number on file since 2022'],['Spoke with','Elena Ruiz, AR lead · Oct 17, 2:22 pm · 2 min'],['She confirmed','The new account ending 7784, and the amount of the last invoice we paid'],['Code','Texted to the mobile on file, entered correctly at 2:24 pm'],['In her words','“Yes — we moved to Citizens in September. The new account ends 7784 and I requested the change.”']] },
+          { h: 'Decision', rows: [['Result','Verified'],['Second approver', st.done.delta ? 'Marcus Lee, Controller · approved' : 'Marcus Lee, Controller']] }
+        ], tech: 'Record ID VX-2039 · fingerprint 9b1e…4c07 · call recorded with disclosure · all four policy checks passed · retained 7 years.' },
+      harbor: { sub: 'Harbor Steel Supply · Invoice 2041 · $48,920 · put on hold Oct 17, 2026', result: 'On hold', chipBg: '#FCE8E6', chipFg: '#A3242E', isDelta: false,
+        sections: [
+          { h: 'The change', rows: [['Asked for by','Invoice 2041, emailed from harborsteel-supply.com'],['Old account','First Commerce Bank ····4471'],['New account','Pacific Rim Credit Union ····9036']] },
+          { h: 'How we checked it', rows: [['Called','(716) 555-0142 — the number on file since 2023'],['Spoke with','Dana Whitfield, AR · Oct 17, 2:49 pm · 1 min 42 s'],['In her words','“Correct. We did not.”']] },
+          { h: 'Decision', rows: [['Result','On hold · nothing sent'],['Assigned to','Priya Natarajan']] }
+        ], tech: 'Record ID VX-2041 · call recorded with disclosure · lookalike sender domain flagged · retained 7 years.' }
+    };
+    const r0 = recs[st.recFor];
+    const rec = { ...r0, sections: r0.sections.map((s, i) => ({ h: s.h, mt: i ? '24px' : '0', rows: s.rows.map(([k, v]) => ({ k, v })) })) };
+    const vendors = [
+      { t: 'Harbor Steel Supply', d: 'Dana Whitfield · (716) 555-0142 · on file since 2023', chip: 'Payment on hold', tone: 'crit', go: go.verify },
+      { t: 'Delta Fabrication', d: 'Elena Ruiz · (585) 555-0128 · on file since 2022', chip: 'Confirmed', tone: 'ok', go: go.record },
+      { t: 'Summit Glass & Glazing', d: '(585) 555-0133 · ', warn: 'number disconnected', d2: ' · on file since 2024', chip: 'Needs a number', tone: 'warn', go: go.decide },
+      { t: 'Ridgeway HVAC', d: '(585) 555-0181 · on file since 2022', chip: 'No changes', tone: 'none', go: go.call },
+      { t: 'Cortez Concrete', d: '(585) 555-0147 · on file since 2021', chip: 'No changes', tone: 'none', go: go.vendors }
+    ].map((v, i) => { const c = { ok: ['#E6F4EA','#1E6B47'], warn: ['#FEF7E0','#8A5109'], crit: ['#FCE8E6','#A3242E'], none: ['#F1F3F4','#5F6368'] }[v.tone]; return { warn: '', d2: '', ...v, bg: c[0], fg: c[1], dot: v.tone !== 'none', bt: i ? '1px solid #E3E3E3' : '0' }; });
+    const snav = [['General','settings'],['Approvals','settings'],['Notifications','settings'],['Team','settings'],['Advanced','advanced']].map(([label, k], i) => { const on = (k === 'advanced' && is.advanced) || (i === 0 && is.settings); return { label, go: go[k], bg: on ? '#E8EEFB' : 'transparent', fg: on ? '#1F3B8F' : '#5F6368' }; });
+    const row = (t, d, extra, i) => ({ t, d, isToggle: false, isBtn: false, btn: '', flip: () => {}, cur: 'default', tb: '#C4C7C5', tl: '3px', pad: i ? '16px 0' : '0 0 16px', bt: i ? '1px solid #E3E3E3' : '0', ...extra });
+    const tog = (on, flip) => ({ isToggle: true, tb: on ? '#1F3B8F' : '#C4C7C5', tl: on ? '21px' : '3px', flip: flip || (() => {}), cur: flip ? 'pointer' : 'default' });
+    const nf = i => () => { const a = st.notif.slice(); a[i] = !a[i]; set({ notif: a }); };
+    const settingsCards = [
+      { h: 'Approvals', rows: [row('Second approver for new bank accounts', "Always required, for any amount. Can't be the person who verified.", tog(true), 0), row('Who can approve', 'Marcus Lee (Controller), Jo Park (CFO)', { isBtn: true, btn: 'Edit' }, 1), row('Approve within', '14 days of verification, then we re-check', { isBtn: true, btn: 'Change' }, 2)] },
+      { h: 'Notifications', rows: [row('Something needs me', 'Email and Slack', tog(st.notif[0], nf(0)), 0), row('Payment put on hold', 'Email, Slack, and text', tog(st.notif[1], nf(1)), 1), row('Daily summary', '8:00 am, email', tog(st.notif[2], nf(2)), 2)] },
+      { h: 'Vendor calls', rows: [row('Call vendors as', '“Granite Ridge Builders accounts payable” from (716) 555-0150', { isBtn: true, btn: 'Edit' }, 0), row('Calling hours', "9 am – 5 pm, vendor's local time", { isBtn: true, btn: 'Change' }, 1)] }
+    ];
+    const rules = [
+      ['Only call numbers from the vendor master', 'Never a number printed on the invoice. (Rule G1)', 'Locked'],
+      ['Number must be on file 90+ days', 'Recent contact changes send the case to a person. (Rule G4)', 'Controller only'],
+      ['Respect do-not-contact vendors', 'Sent to a person instead. (Rule G3)', 'Controller only'],
+      ['Release needs a second approver', 'Blocked payments never release; a controller reopens instead. (Rule G2)', 'Locked']
+    ].map(([t, d, lock], i) => ({ t, d, lock, pad: i ? '16px 0' : '0 0 16px', bt: i ? '1px solid #E3E3E3' : '0' }));
+    const jumpDefs = [['flow','Screen flow'],['home','Payments · inbox'],['call','Calling now · Ridgeway'],['verify','What changed · Harbor Steel'],['decide','Your decision · Summit Glass'],['approve','Approve payment · Delta Fabrication'],['onhold','On hold · next steps'],['record','Verification record · Delta'],['vendors','Vendors'],['settings','Settings'],['advanced','Settings · Advanced']];
+    const jumps = jumpDefs.map(([k, label]) => ({ label, go: go[k], bc: st.screen === k ? '#DDDDDD' : '#444444', fg: st.screen === k ? '#FFFFFF' : '#BBBBBB' }));
+    const flowNodes = [['home','Payments','Inbox: only what needs you'],['call','Calling now','The agent on the phone, live'],['verify','What changed','Old vs new, what we did, result'],['decide','Your decision',"When the vendor couldn't be reached"],['approve','Approve payment','Second person signs off'],['onhold','On hold','Vendor said no → payment stopped'],['record','Verification record','For auditors, one page'],['settings','Settings','Approvals, notifications, team'],['advanced','Settings → Advanced','Rules, call policy, testing (admins)']].map(([k,t,d]) => ({ t, d, go: go[k] }));
+    const paid = [['Cortez Concrete','$8,410'],['Lakeshore Electric','$14,200'],['Pinecrest Lumber','$22,975'],['Valley Rental Co.','$3,180'],['Northgate Plumbing','$6,640'],['Brookline Roofing','$17,300'],['Atlas Scaffolding','$4,925']].map(([v,a],i)=>({ v, a, bt: i ? '1px solid #E3E3E3' : '0' }));
+    const n = needs.length;
+    return {
+      go, is, open, rot, toggle, tabs, avatar: is.approve ? 'ML' : 'PN',
+      needs, hasNeeds: n > 0, needCount: n ? (n === 1 ? '1 thing needs you' : n + ' things need you') : 'Nothing needs you right now',
+      hasFlash: !!st.flash, flash, clearFlash: () => set({ flash: null }),
+      paid, paidLabel: open.paid ? 'Hide them' : 'Show them',
+      live, liveSteps, didSteps, harborCall, options, stop: e => e.stopPropagation(),
+      deltaChecks, ackBg: st.ack ? '#1F3B8F' : '#FFFFFF', ackMark: st.ack ? '✓' : '', toggleAck: () => set({ ack: !st.ack }),
+      apBg: st.ack ? '#1F3B8F' : '#C4C7C5', apFg: '#FFFFFF', apCur: st.ack ? 'pointer' : 'not-allowed',
+      approve: () => st.ack && finish('delta', '$12,350 approved for Delta Fabrication. It goes out on Monday’s run.', 'ok'),
+      decline: () => finish('delta', 'Payment to Delta Fabrication declined. Priya Natarajan has been told.', 'warn'),
+      todos, todoProgress: st.todos.filter(Boolean).length + ' of 4 done.',
+      asked: st.asked, notAsked: !st.asked, askController: () => set({ asked: true }),
+      rec, recordBack: st.recFor === 'harbor' ? go.onhold : go.approve,
+      vendors, snav, settingsCards, rules, jumps, flowNodes
+    };
+  }
+}
+</script>
+</body>
+</html>

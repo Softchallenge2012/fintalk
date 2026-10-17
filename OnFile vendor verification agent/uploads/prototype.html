@@ -1,0 +1,439 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>OnFile · Clickable prototype</title><link rel="preconnect" href="https://fonts.googleapis.com"><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet"><style>
+:root{
+  --bg-page:#F8F9FA; --bg-surface:#FFFFFF; --bg-muted:#F1F3F4; --bg-hover:#F1F3F4;
+  --text-primary:#1F1F1F; --text-secondary:#5F6368; --text-tertiary:#80868B; --text-inverse:#FFFFFF;
+  --border:#E3E3E3; --border-strong:#C4C7C5;
+  --brand:#1F3B8F; --brand-hover:#152B6B; --brand-tint:#E8EEFB;
+  --ok:#1E6B47; --ok-tint:#E6F4EA; --warn:#8A5109; --warn-tint:#FEF7E0; --crit:#A3242E; --crit-tint:#FCE8E6;
+  --font:'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  --r-card:16px; --r-btn:999px; --r-chip:999px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{background:var(--bg-page);color:var(--text-primary);font-family:var(--font);font-size:15px;line-height:1.5;-webkit-font-smoothing:antialiased}
+a{color:inherit;text-decoration:none}
+.screen{min-height:100%;width:1280px;margin:0 auto;background:var(--bg-page)}
+/* nav */
+.nav{height:64px;background:#fff;border-bottom:1px solid var(--border);display:flex;align-items:center;padding:0 32px;gap:8px}
+.logo{display:flex;align-items:center;gap:10px;font-weight:600;font-size:18px;margin-right:24px}
+.logo i{width:32px;height:32px;border-radius:10px;background:var(--brand);display:inline-block}
+.nav a.tab{padding:8px 16px;border-radius:var(--r-btn);color:var(--text-secondary);font-weight:500}
+.nav a.tab.on{background:var(--brand-tint);color:var(--brand)}
+.nav .sp{flex:1}
+.nav .org{color:var(--text-secondary);font-size:14px;margin-right:12px}
+.avatar{width:36px;height:36px;border-radius:50%;background:var(--brand-tint);color:var(--brand);display:flex;align-items:center;justify-content:center;font-weight:600;font-size:13px}
+/* layout */
+.page{padding:32px 40px 56px;max-width:1040px;margin:0 auto}
+.page.wide{max-width:1200px}
+.back{display:inline-flex;align-items:center;gap:6px;color:var(--text-secondary);font-size:14px;margin-bottom:20px}
+h1{font-size:30px;font-weight:500;letter-spacing:-.01em;line-height:1.25}
+h2{font-size:18px;font-weight:600;margin-bottom:12px}
+.sub{color:var(--text-secondary);margin-top:6px;font-size:15px}
+.lead{font-size:17px;color:var(--text-primary);margin-top:8px}
+.muted{color:var(--text-secondary)}
+.small{font-size:13px;color:var(--text-tertiary)}
+.row{display:flex;align-items:center;gap:12px}
+.between{display:flex;justify-content:space-between;align-items:center;gap:16px}
+.stack>*+*{margin-top:16px}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+.grid3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px}
+.cols{display:grid;grid-template-columns:1fr 340px;gap:24px;align-items:start}
+/* cards */
+.card{background:var(--bg-surface);border:1px solid var(--border);border-radius:var(--r-card);padding:24px}
+.card.pad-sm{padding:16px 20px}
+.card.tint-ok{background:var(--ok-tint);border-color:transparent}
+.card.tint-warn{background:var(--warn-tint);border-color:transparent}
+.card.tint-crit{background:var(--crit-tint);border-color:transparent}
+.card.tint-brand{background:var(--brand-tint);border-color:transparent}
+/* chips */
+.chip{display:inline-flex;align-items:center;gap:6px;padding:4px 12px;border-radius:var(--r-chip);font-size:13px;font-weight:500;background:var(--bg-muted);color:var(--text-secondary);white-space:nowrap}
+.chip.ok{background:var(--ok-tint);color:var(--ok)} .chip.warn{background:var(--warn-tint);color:var(--warn)}
+.chip.crit{background:var(--crit-tint);color:var(--crit)} .chip.info{background:var(--brand-tint);color:var(--brand)}
+.dot{width:8px;height:8px;border-radius:50%;background:currentColor;display:inline-block}
+/* buttons */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;height:44px;padding:0 24px;border-radius:var(--r-btn);font-weight:600;font-size:15px;border:1px solid var(--border-strong);background:#fff;color:var(--text-primary);cursor:pointer;white-space:nowrap}
+.btn.primary{background:var(--brand);border-color:var(--brand);color:#fff}
+.btn.danger{background:var(--crit);border-color:var(--crit);color:#fff}
+.btn.ghost{border-color:transparent;background:transparent;color:var(--brand)}
+.btn.sm{height:36px;padding:0 16px;font-size:14px}
+.btn.block{width:100%}
+.actions{display:flex;gap:12px;align-items:center;margin-top:24px}
+/* list rows */
+.list{background:#fff;border:1px solid var(--border);border-radius:var(--r-card);overflow:hidden}
+.item{display:grid;grid-template-columns:1fr auto;gap:16px;align-items:center;padding:20px 24px;border-top:1px solid var(--border)}
+.item:first-child{border-top:0}
+.item .t{font-weight:600;font-size:16px}
+.item .d{color:var(--text-secondary);margin-top:2px}
+.item .amt{font-weight:600;font-size:16px;margin-left:12px}
+.section-h{display:flex;align-items:center;gap:10px;margin:28px 0 12px;font-size:13px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--text-secondary)}
+/* key value */
+.kv{display:grid;grid-template-columns:160px 1fr;gap:10px 16px;font-size:15px}
+.kv dt{color:var(--text-secondary)} .kv dd{}
+.kv.tight{grid-template-columns:120px 1fr}
+/* change diff */
+.diff{display:grid;grid-template-columns:1fr 32px 1fr;gap:12px;align-items:center}
+.diff .box{border:1px solid var(--border);border-radius:12px;padding:14px 16px}
+.diff .box.new{border-color:var(--crit);background:var(--crit-tint)}
+.diff .lbl{font-size:12px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--text-tertiary);margin-bottom:6px}
+.diff .arrow{text-align:center;color:var(--text-tertiary);font-size:20px}
+/* steps */
+.steps{list-style:none}
+.steps li{display:grid;grid-template-columns:28px 1fr;gap:14px;padding:12px 0;border-top:1px solid var(--border)}
+.steps li:first-child{border-top:0;padding-top:0}
+.steps .ic{width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:700}
+.ic.ok{background:var(--ok-tint);color:var(--ok)} .ic.crit{background:var(--crit-tint);color:var(--crit)} .ic.warn{background:var(--warn-tint);color:var(--warn)} .ic.info{background:var(--brand-tint);color:var(--brand)}
+.steps .t{font-weight:500} .steps .d{color:var(--text-secondary);font-size:14px}
+/* options */
+.opt{display:block;border:1px solid var(--border);border-radius:14px;padding:18px 20px;background:#fff}
+.opt+.opt{margin-top:12px}
+.opt .t{font-weight:600;font-size:16px}
+.opt .d{color:var(--text-secondary);font-size:14px;margin-top:2px}
+.opt.rec{border-color:var(--brand);box-shadow:0 0 0 1px var(--brand) inset}
+.opt .tag{float:right}
+/* details disclosure */
+details{border-top:1px solid var(--border);margin-top:20px;padding-top:12px}
+summary{cursor:pointer;color:var(--brand);font-weight:500;list-style:none;display:flex;align-items:center;gap:8px}
+summary::before{content:'›';font-size:20px;line-height:1;transition:transform .15s}
+details[open] summary::before{transform:rotate(90deg)}
+details .body{margin-top:14px;color:var(--text-secondary);font-size:14px}
+/* transcript */
+.msg{display:grid;grid-template-columns:72px 1fr;gap:12px;padding:8px 0;font-size:14px}
+.msg .who{color:var(--text-tertiary);font-size:13px;padding-top:8px}
+.msg .b{background:var(--bg-muted);border-radius:14px;padding:10px 14px}
+.msg.agent .b{background:var(--brand-tint)}
+/* form */
+.field{display:block;margin-top:16px}
+.field label{display:block;font-size:13px;color:var(--text-secondary);margin-bottom:6px}
+.input{height:44px;border:1px solid var(--border-strong);border-radius:10px;padding:0 14px;display:flex;align-items:center;background:#fff;color:var(--text-primary)}
+.input.ph{color:var(--text-tertiary)}
+.check{display:flex;align-items:center;gap:10px;margin-top:16px}
+.check i{width:20px;height:20px;border-radius:5px;border:2px solid var(--brand);display:inline-block;position:relative;flex:none}
+.check i.on{background:var(--brand)} .check i.on::after{content:'';position:absolute;left:5px;top:1px;width:5px;height:10px;border:solid #fff;border-width:0 2px 2px 0;transform:rotate(45deg)}
+.toggle{width:40px;height:22px;border-radius:999px;background:var(--border-strong);position:relative;flex:none}
+.toggle::after{content:'';position:absolute;top:3px;left:3px;width:16px;height:16px;border-radius:50%;background:#fff}
+.toggle.on{background:var(--brand)} .toggle.on::after{left:21px}
+/* settings */
+.settings{display:grid;grid-template-columns:220px 1fr;gap:32px;align-items:start}
+.snav a{display:block;padding:10px 16px;border-radius:var(--r-btn);color:var(--text-secondary);font-weight:500}
+.snav a.on{background:var(--brand-tint);color:var(--brand)}
+.srow{display:flex;justify-content:space-between;align-items:center;gap:24px;padding:16px 0;border-top:1px solid var(--border)}
+.srow:first-of-type{border-top:0;padding-top:0}
+.srow .t{font-weight:500} .srow .d{color:var(--text-secondary);font-size:14px;margin-top:2px}
+.pill-tabs{display:flex;gap:8px;margin:0 0 20px}
+.pill-tabs a{padding:8px 16px;border-radius:var(--r-btn);border:1px solid var(--border);font-weight:500;font-size:14px;color:var(--text-secondary)}
+.pill-tabs a.on{background:var(--text-primary);color:#fff;border-color:var(--text-primary)}
+table.simple{width:100%;border-collapse:collapse;font-size:14px}
+table.simple th{text-align:left;font-size:12px;letter-spacing:.06em;text-transform:uppercase;color:var(--text-tertiary);padding:8px 0;border-bottom:1px solid var(--border);font-weight:600}
+table.simple td{padding:12px 0;border-bottom:1px solid var(--border);vertical-align:top}
+.num{font-size:40px;font-weight:500;letter-spacing:-.02em;line-height:1}
+.stat{padding:20px 24px}
+.stat .l{color:var(--text-secondary);font-size:14px}
+.stat.ok .num{color:var(--ok)} .stat.crit .num{color:var(--crit)} .stat.warn .num{color:var(--warn)}
+.banner{display:flex;align-items:center;gap:16px;padding:20px 24px;border-radius:var(--r-card)}
+.banner.crit{background:var(--crit);color:#fff}
+.banner.ok{background:var(--ok);color:#fff}
+.banner h1{color:#fff;font-size:24px}
+.banner .sub{color:rgba(255,255,255,.85)}
+.flowmap{display:grid;grid-template-columns:repeat(4,1fr);gap:20px;align-items:center}
+.fnode{background:#fff;border:1px solid var(--border);border-radius:14px;padding:16px 18px}
+.fnode .t{font-weight:600} .fnode .d{font-size:13px;color:var(--text-secondary)}
+/* prototype shell */
+body.proto .screen{display:none} body.proto .screen:target{display:block}
+body.proto .screen.default{display:block} body.proto .screen:target ~ .screen.default, body.proto .screen.default:has(~ .screen:target){display:none}
+
+body.proto{background:#2b2d31;padding:24px 0}
+body.proto .screen{box-shadow:0 8px 40px rgba(0,0,0,.35);border-radius:12px;overflow:hidden}
+.pbar{position:fixed;left:0;right:0;bottom:0;background:#1f1f1f;color:#ddd;font:13px var(--font);padding:10px 20px;display:flex;gap:6px;align-items:center;z-index:9;flex-wrap:wrap}
+.pbar a{color:#bbb;padding:4px 10px;border-radius:999px;border:1px solid #444}
+.pbar a:hover{color:#fff;border-color:#888}
+.pbar .lbl{margin-right:8px;color:#888}
+</style></head><body class="proto"><main class="screen" id="flow" style="width:1280px;min-height:420px">
+<div class="page wide">
+  <h1>Simplified flow</h1>
+  <p class="sub">One question per screen. The system handles the rest; details live in Settings → Advanced.</p>
+  <div class="flowmap" style="margin-top:28px">
+    <a class="fnode" href="#home"><div class="t">Payments</div><div class="d">Inbox: only what needs you</div></a>
+    <a class="fnode" href="#verify"><div class="t">What changed</div><div class="d">Old vs new, what we did, result</div></a>
+    <a class="fnode" href="#decide"><div class="t">Your decision</div><div class="d">When the vendor couldn't be reached</div></a>
+    <a class="fnode" href="#approve"><div class="t">Approve payment</div><div class="d">Second person signs off</div></a>
+  </div>
+  <div class="flowmap" style="margin-top:20px">
+    <a class="fnode" href="#onhold"><div class="t">On hold</div><div class="d">Vendor said no → payment stopped</div></a>
+    <a class="fnode" href="#record"><div class="t">Verification record</div><div class="d">For auditors, one page</div></a>
+    <a class="fnode" href="#settings"><div class="t">Settings</div><div class="d">Approvals, notifications, team</div></a>
+    <a class="fnode" href="#advanced"><div class="t">Settings → Advanced</div><div class="d">Rules, call policy, testing (admins)</div></a>
+  </div>
+</div></main><main class="screen default" id="home" style="width:1280px;min-height:820px"><header class="nav"><a class="logo" href="#home"><i></i>OnFile</a><a class="tab on" href="#home">Payments</a><a class="tab" href="#vendors">Vendors</a><a class="tab" href="#settings">Settings</a><span class="sp"></span><span class="org">Granite Ridge Builders</span><span class="avatar">PN</span></header>
+<div class="page">
+  <div class="between">
+    <div><h1>Payments</h1><p class="sub">Friday, Oct 17 · 2 things need you</p></div>
+    <span class="chip ok"><span class="dot"></span>48 paid this week, nothing unusual</span>
+  </div>
+
+  <div class="section-h">Needs you</div>
+  <div class="list">
+    <a class="item" href="#decide">
+      <div><div class="t">Summit Glass &amp; Glazing <span class="amt">$19,870</span></div>
+        <div class="d">Changed their bank account · we couldn't reach them on their usual number</div></div>
+      <span class="btn sm primary" data-event="decide">Decide</span>
+    </a>
+    <a class="item" href="#approve">
+      <div><div class="t">Delta Fabrication <span class="amt">$12,350</span></div>
+        <div class="d">Changed their bank account · confirmed by phone with Elena Ruiz · ready for your approval</div></div>
+      <span class="btn sm primary" data-event="open_release">Approve</span>
+    </a>
+  </div>
+
+  <div class="section-h">Happening now</div>
+  <div class="list">
+    <a class="item" href="#home">
+      <div><div class="t">Ridgeway HVAC <span class="amt">$26,040</span></div>
+        <div class="d">Changed their bank account · calling them now to confirm · no action needed yet</div></div>
+      <span class="chip info"><span class="dot"></span>Calling</span>
+    </a>
+  </div>
+
+  <div class="section-h">On hold</div>
+  <div class="list">
+    <a class="item" href="#verify">
+      <div><div class="t">Harbor Steel Supply <span class="amt">$48,920</span></div>
+        <div class="d">Vendor said they did not change their account · payment stopped · see what happened</div></div>
+      <span class="chip crit"><span class="dot"></span>On hold</span>
+    </a>
+  </div>
+
+  <p class="small" style="margin-top:24px">7 invoices this morning had no changes and were paid on normal terms. <a href="#home" style="color:var(--brand)">Show them</a></p>
+</div></main><main class="screen" id="verify" style="width:1280px;min-height:1180px"><header class="nav"><a class="logo" href="#home"><i></i>OnFile</a><a class="tab on" href="#home">Payments</a><a class="tab" href="#vendors">Vendors</a><a class="tab" href="#settings">Settings</a><span class="sp"></span><span class="org">Granite Ridge Builders</span><span class="avatar">PN</span></header>
+<div class="page">
+  <a class="back" href="#home">‹ Payments</a>
+  <div class="between">
+    <div><h1>Harbor Steel Supply · $48,920</h1><p class="sub">Invoice 2041 · due Nov 2 · vendor since 2023</p></div>
+    <span class="chip crit"><span class="dot"></span>Payment on hold</span>
+  </div>
+
+  <div class="card" style="margin-top:24px">
+    <h2>What changed on this invoice</h2>
+    <div class="diff">
+      <div class="box"><div class="lbl">On file since 2023</div><div><strong>First Commerce Bank</strong>, Buffalo NY</div><div class="muted">Account ending 4471</div></div>
+      <div class="arrow">→</div>
+      <div class="box new"><div class="lbl">Invoice asks for</div><div><strong>Pacific Rim Credit Union</strong>, Las Vegas NV</div><div class="muted">Account ending 9036 · new mailing address</div></div>
+    </div>
+    <details><summary>See the email that asked for the change</summary>
+      <div class="body">“Please note we have updated our banking details effective immediately. Kindly remit payment for INV-2041 and all future invoices to the new account below.”<br><span class="small">Sent from <strong>harborsteel-supply.com</strong> — one letter different from the vendor's real domain.</span></div>
+    </details>
+  </div>
+
+  <div class="card" style="margin-top:20px">
+    <h2>What we did</h2>
+    <ul class="steps">
+      <li><span class="ic ok">✓</span><div><div class="t">Held the payment as soon as we saw the change</div><div class="d">9:08 am</div></div></li>
+      <li><span class="ic ok">✓</span><div><div class="t">Called Harbor Steel on the number you've had on file for 3 years</div><div class="d">2:49 pm · not the new number on the invoice</div></div></li>
+      <li><span class="ic crit">✕</span><div><div class="t">Dana in Accounts Receivable said they did <strong>not</strong> change their bank account</div><div class="d">2:51 pm · she confirmed the account ending 4471 is still correct</div></div></li>
+    </ul>
+    <details><summary>Listen to or read the call (1 min 42 s)</summary>
+      <div class="body">
+        <div class="msg agent"><span class="who">OnFile</span><div class="b">Hi, this is the OnFile verification assistant calling for Granite Ridge Builders' accounts payable team. This call is recorded. Could I speak with someone in accounts receivable?</div></div>
+        <div class="msg"><span class="who">Dana</span><div class="b">This is Dana in AR.</div></div>
+        <div class="msg agent"><span class="who">OnFile</span><div class="b">We received invoice 2041 with a request to change the bank account we pay Harbor Steel into. Could you tell me the last four digits of the account you expect payment to?</div></div>
+        <div class="msg"><span class="who">Dana</span><div class="b">It's 4471. We haven't changed anything.</div></div>
+        <div class="msg agent"><span class="who">OnFile</span><div class="b">That matches our records. To confirm: Harbor Steel has not requested any change to its bank account?</div></div>
+        <div class="msg"><span class="who">Dana</span><div class="b">Correct. We did not.</div></div>
+      </div>
+    </details>
+  </div>
+
+  <div class="card tint-crit" style="margin-top:20px">
+    <div class="between">
+      <div><h2 style="margin-bottom:4px">This looks like fraud. The payment is on hold.</h2>
+        <p class="muted">Nothing was sent. Dana has been told your team will follow up.</p></div>
+      <a class="btn danger" href="#onhold" data-event="open_ticket">See next steps</a>
+    </div>
+  </div>
+</div></main><main class="screen" id="decide" style="width:1280px;min-height:820px"><header class="nav"><a class="logo" href="#home"><i></i>OnFile</a><a class="tab on" href="#home">Payments</a><a class="tab" href="#vendors">Vendors</a><a class="tab" href="#settings">Settings</a><span class="sp"></span><span class="org">Granite Ridge Builders</span><span class="avatar">PN</span></header>
+<div class="page">
+  <a class="back" href="#home">‹ Payments</a>
+  <h1>We couldn't reach Summit Glass &amp; Glazing</h1>
+  <p class="lead">They asked to be paid into a new account ($19,870). Their usual phone number is disconnected, so we can't confirm it's really them. The payment is held until you choose.</p>
+
+  <div class="cols" style="margin-top:28px">
+    <div>
+      <a class="opt rec" href="#home" data-event="request_callback"><span class="chip info tag">Recommended</span><div class="t">Ask Summit Glass to call us back</div><div class="d">We email their known contact. When they call, we confirm the change with them.</div></a>
+      <a class="opt" href="#decide" data-event="call_w9_number"><div class="t">Try the number on their tax form instead</div><div class="d">A second number we have for them. You'll be asked to say why.</div></a>
+      <a class="opt" href="#decide" data-event="manual_verify"><div class="t">I've confirmed it myself</div><div class="d">You spoke to them another way. Needs a note and a second person to approve.</div></a>
+      <a class="opt" href="#home" data-event="pay_on_file"><div class="t">Pay their old account instead</div><div class="d">Ignore the change and pay the account on file.</div></a>
+    </div>
+    <div class="card pad-sm">
+      <dl class="kv tight">
+        <dt>Invoice</dt><dd>2036 · $19,870</dd>
+        <dt>Vendor since</dt><dd>2024 · 3 invoices paid</dd>
+        <dt>Held for</dt><dd>5 hours</dd>
+        <dt>Change</dt><dd>New bank account and new mailing address</dd>
+      </dl>
+      <details><summary>Why we couldn't verify</summary><div class="body">The phone number on file (585) 555-0133 is disconnected. We don't dial numbers that appear on an invoice, because that's where fraudsters put their own.</div></details>
+    </div>
+  </div>
+</div></main><main class="screen" id="approve" style="width:1280px;min-height:820px"><header class="nav"><a class="logo" href="#home"><i></i>OnFile</a><a class="tab on" href="#home">Payments</a><a class="tab" href="#vendors">Vendors</a><a class="tab" href="#settings">Settings</a><span class="sp"></span><span class="org">Granite Ridge Builders</span><span class="avatar">ML</span></header>
+<div class="page">
+  <a class="back" href="#home">‹ Payments</a>
+  <h1>Approve $12,350 to Delta Fabrication</h1>
+  <p class="lead">First payment to their new account at Citizens Bank (ending 7784).</p>
+
+  <div class="cols" style="margin-top:28px">
+    <div class="card">
+      <div class="row" style="margin-bottom:16px"><span class="ic ok" style="width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center">✓</span>
+        <div><div style="font-weight:600;font-size:16px">Everything checked out</div><div class="muted">We called Delta on their known number. Elena Ruiz confirmed the new account and entered the code we texted her.</div></div></div>
+      <details><summary>See the full checklist</summary>
+        <div class="body">
+          <ul class="steps">
+            <li><span class="ic ok">✓</span><div class="t">Called the number on file, not the one on the invoice</div></li>
+            <li><span class="ic ok">✓</span><div class="t">Elena confirmed the account ending 7784</div></li>
+            <li><span class="ic ok">✓</span><div class="t">She answered a question only the real vendor would know</div></li>
+            <li><span class="ic ok">✓</span><div class="t">Text-message code entered correctly</div></li>
+            <li><span class="ic ok">✓</span><div class="t">Verified today · record saved</div></li>
+          </ul>
+          <a href="#record" style="color:var(--brand);display:inline-block;margin-top:10px">Open the verification record</a>
+        </div>
+      </details>
+      <label class="field"><span style="display:block;font-size:13px;color:var(--text-secondary);margin-bottom:6px">Note (optional)</span><div class="input ph">e.g. vendor moved banks in September</div></label>
+      <div class="check"><i class="on"></i><span>I've reviewed this and I'm not the person who verified it</span></div>
+      <div class="actions">
+        <a class="btn primary" href="#home" data-event="release">Approve $12,350</a>
+        <a class="btn" href="#home" data-event="reject">Decline</a>
+        <a class="btn ghost" href="#home" data-event="not_now">Not now</a>
+      </div>
+    </div>
+    <div class="card pad-sm">
+      <dl class="kv tight">
+        <dt>To</dt><dd>Delta Fabrication</dd>
+        <dt>Amount</dt><dd>$12,350.00</dd>
+        <dt>Account</dt><dd>Citizens Bank ····7784 <span class="chip" style="margin-left:4px">new</span></dd>
+        <dt>Verified by</dt><dd>OnFile, with Elena Ruiz</dd>
+        <dt>Requested by</dt><dd>Priya Natarajan</dd>
+        <dt>Approving as</dt><dd>Marcus Lee, Controller</dd>
+      </dl>
+    </div>
+  </div>
+</div></main><main class="screen" id="onhold" style="width:1280px;min-height:820px"><header class="nav"><a class="logo" href="#home"><i></i>OnFile</a><a class="tab on" href="#home">Payments</a><a class="tab" href="#vendors">Vendors</a><a class="tab" href="#settings">Settings</a><span class="sp"></span><span class="org">Granite Ridge Builders</span><span class="avatar">PN</span></header>
+<div class="page">
+  <a class="back" href="#home">‹ Payments</a>
+  <div class="banner crit">
+    <div style="flex:1"><h1>Payment on hold</h1><p class="sub">Harbor Steel Supply · $48,920 · the vendor said they did not change their account</p></div>
+    <span class="chip" style="background:rgba(255,255,255,.18);color:#fff">Nothing was sent</span>
+  </div>
+
+  <div class="cols" style="margin-top:24px">
+    <div class="card">
+      <h2>Next steps</h2>
+      <p class="muted" style="margin-bottom:12px">Assigned to Priya Natarajan. Tick each one as you go.</p>
+      <div class="check"><i class="on"></i><span>Hold all other open invoices from Harbor Steel for now</span></div>
+      <div class="check"><i></i><span>Report the new account to your bank</span></div>
+      <div class="check"><i></i><span>Let the insurance broker know</span></div>
+      <div class="check"><i></i><span>Ask Harbor Steel to check their email was not hacked</span></div>
+      <div class="actions">
+        <a class="btn primary" href="#record" data-event="open_evidence_pack">Download the record</a>
+        <a class="btn" href="#home" data-event="back_to_inbox">Back to payments</a>
+      </div>
+    </div>
+    <div class="stack">
+      <div class="card pad-sm">
+        <h2 style="font-size:15px">Who knows</h2>
+        <p class="muted" style="font-size:14px">Priya Natarajan (AP) · Marcus Lee (Controller) · Dana Whitfield at Harbor Steel, by phone</p>
+      </div>
+      <div class="card pad-sm">
+        <h2 style="font-size:15px">Need to pay this anyway?</h2>
+        <p class="muted" style="font-size:14px">A controller can reopen this, but the vendor will be called again and must confirm the new account first.</p>
+        <a class="btn sm" style="margin-top:12px" href="#onhold" data-event="controller_override">Ask a controller</a>
+      </div>
+    </div>
+  </div>
+</div></main><main class="screen" id="record" style="width:1280px;min-height:900px"><header class="nav"><a class="logo" href="#home"><i></i>OnFile</a><a class="tab on" href="#home">Payments</a><a class="tab" href="#vendors">Vendors</a><a class="tab" href="#settings">Settings</a><span class="sp"></span><span class="org">Granite Ridge Builders</span><span class="avatar">PN</span></header>
+<div class="page">
+  <a class="back" href="#approve">‹ Back</a>
+  <div class="between">
+    <div><h1>Verification record</h1><p class="sub">Delta Fabrication · Invoice 2039 · $12,350 · verified Oct 17, 2026</p></div>
+    <div class="row"><span class="chip ok"><span class="dot"></span>Verified</span><a class="btn sm" href="#record" data-event="export_pdf">Download PDF</a></div>
+  </div>
+
+  <div class="cols" style="margin-top:24px">
+    <div class="card">
+      <h2>The change</h2>
+      <dl class="kv"><dt>Asked for by</dt><dd>Invoice 2039, emailed Oct 16 from billing@deltafab.com</dd><dt>Old account</dt><dd>Chase ····2210</dd><dt>New account</dt><dd>Citizens Bank ····7784</dd></dl>
+      <h2 style="margin-top:24px">How we confirmed it</h2>
+      <dl class="kv"><dt>Called</dt><dd>(585) 555-0128 — the number on file since 2022</dd><dt>Spoke with</dt><dd>Elena Ruiz, AR lead · Oct 17, 2:22 pm · 2 min</dd><dt>She confirmed</dt><dd>The new account ending 7784, and the amount of the last invoice we paid</dd><dt>Code</dt><dd>Texted to the mobile on file, entered correctly at 2:24 pm</dd><dt>In her words</dt><dd>“Yes — we moved to Citizens in September. The new account ends 7784 and I requested the change.”</dd></dl>
+      <h2 style="margin-top:24px">Decision</h2>
+      <dl class="kv"><dt>Result</dt><dd><span class="chip ok">Verified</span></dd><dt>Second approver</dt><dd>Marcus Lee, Controller</dd></dl>
+      <details><summary>Technical details for auditors</summary><div class="body">Record ID VX-2039 · fingerprint 9b1e…4c07 · call recorded with disclosure · all four policy checks passed · retained 7 years.</div></details>
+    </div>
+    <div class="stack">
+      <div class="card pad-sm"><h2 style="font-size:15px">What this covers</h2><p class="muted" style="font-size:14px">Your insurer's “callback verification of vendor payment changes” — yes, documented.<br><br>Change control for vendor bank details, with two people signing off.</p></div>
+      <a class="btn primary block" href="#approve" data-event="proceed_to_release">Go to approval</a>
+    </div>
+  </div>
+</div></main><main class="screen" id="vendors" style="width:1280px;min-height:820px"><header class="nav"><a class="logo" href="#home"><i></i>OnFile</a><a class="tab" href="#home">Payments</a><a class="tab on" href="#vendors">Vendors</a><a class="tab" href="#settings">Settings</a><span class="sp"></span><span class="org">Granite Ridge Builders</span><span class="avatar">PN</span></header>
+<div class="page">
+  <div class="between"><div><h1>Vendors</h1><p class="sub">38 vendors · contact details we use to confirm changes</p></div><a class="btn primary" href="#vendors">Add vendor</a></div>
+  <div class="list" style="margin-top:24px">
+    <a class="item" href="#vendors"><div><div class="t">Harbor Steel Supply</div><div class="d">Dana Whitfield · (716) 555-0142 · on file since 2023</div></div><span class="chip crit"><span class="dot"></span>Payment on hold</span></a>
+    <a class="item" href="#vendors"><div><div class="t">Delta Fabrication</div><div class="d">Elena Ruiz · (585) 555-0128 · on file since 2022</div></div><span class="chip ok"><span class="dot"></span>Confirmed</span></a>
+    <a class="item" href="#vendors"><div><div class="t">Summit Glass &amp; Glazing</div><div class="d">(585) 555-0133 · <span style="color:var(--crit)">number disconnected</span> · on file since 2024</div></div><span class="chip warn"><span class="dot"></span>Needs a number</span></a>
+    <a class="item" href="#vendors"><div><div class="t">Ridgeway HVAC</div><div class="d">(585) 555-0181 · on file since 2022</div></div><span class="chip">No changes</span></a>
+    <a class="item" href="#vendors"><div><div class="t">Cortez Concrete</div><div class="d">(585) 555-0147 · on file since 2021</div></div><span class="chip">No changes</span></a>
+  </div>
+</div></main><main class="screen" id="settings" style="width:1280px;min-height:820px"><header class="nav"><a class="logo" href="#home"><i></i>OnFile</a><a class="tab" href="#home">Payments</a><a class="tab" href="#vendors">Vendors</a><a class="tab on" href="#settings">Settings</a><span class="sp"></span><span class="org">Granite Ridge Builders</span><span class="avatar">PN</span></header>
+<div class="page">
+  <h1>Settings</h1>
+  <div class="settings" style="margin-top:24px"><nav class="snav"><a class="on" href="{settings}">General</a><a href="{settings}">Approvals</a><a href="{settings}">Notifications</a><a href="{settings}">Team</a><a class="" href="{advanced}">Advanced</a></nav>
+    <div class="stack">
+      <div class="card">
+        <h2>Approvals</h2>
+        <div class="srow"><div><div class="t">Second approver for new bank accounts</div><div class="d">Always required, for any amount. Can't be the person who verified.</div></div><span class="toggle on"></span></div>
+        <div class="srow"><div><div class="t">Who can approve</div><div class="d">Marcus Lee (Controller), Jo Park (CFO)</div></div><a class="btn sm" href="#settings">Edit</a></div>
+        <div class="srow"><div><div class="t">Approve within</div><div class="d">14 days of verification, then we re-check</div></div><a class="btn sm" href="#settings">Change</a></div>
+      </div>
+      <div class="card">
+        <h2>Notifications</h2>
+        <div class="srow"><div><div class="t">Something needs me</div><div class="d">Email and Slack</div></div><span class="toggle on"></span></div>
+        <div class="srow"><div><div class="t">Payment put on hold</div><div class="d">Email, Slack, and text</div></div><span class="toggle on"></span></div>
+        <div class="srow"><div><div class="t">Daily summary</div><div class="d">8:00 am, email</div></div><span class="toggle"></span></div>
+      </div>
+      <div class="card">
+        <h2>Vendor calls</h2>
+        <div class="srow"><div><div class="t">Call vendors as</div><div class="d">“Granite Ridge Builders accounts payable” from (716) 555-0150</div></div><a class="btn sm" href="#settings">Edit</a></div>
+        <div class="srow"><div><div class="t">Calling hours</div><div class="d">9 am – 5 pm, vendor's local time</div></div><a class="btn sm" href="#settings">Change</a></div>
+      </div>
+    </div>
+  </div>
+</div></main><main class="screen" id="advanced" style="width:1280px;min-height:1000px"><header class="nav"><a class="logo" href="#home"><i></i>OnFile</a><a class="tab" href="#home">Payments</a><a class="tab" href="#vendors">Vendors</a><a class="tab on" href="#settings">Settings</a><span class="sp"></span><span class="org">Granite Ridge Builders</span><span class="avatar">PN</span></header>
+<div class="page">
+  <h1>Settings</h1>
+  <div class="settings" style="margin-top:24px"><nav class="snav"><a class="" href="{settings}">General</a><a href="{settings}">Approvals</a><a href="{settings}">Notifications</a><a href="{settings}">Team</a><a class="on" href="{advanced}">Advanced</a></nav>
+    <div class="stack">
+      <div class="card pad-sm tint-brand"><span class="muted" style="font-size:14px">For admins. These rules run automatically; everyday users never see them. Changing them needs a controller.</span></div>
+      <div class="card">
+        <h2>Verification rules</h2>
+        <div class="srow"><div><div class="t">Only call numbers from the vendor master</div><div class="d">Never a number printed on the invoice. (Rule G1)</div></div><span class="toggle on"></span></div>
+        <div class="srow"><div><div class="t">Number must be on file 90+ days</div><div class="d">Recent contact changes send the case to a person. (Rule G4)</div></div><span class="toggle on"></span></div>
+        <div class="srow"><div><div class="t">Respect do-not-contact vendors</div><div class="d">Sent to a person instead. (Rule G3)</div></div><span class="toggle on"></span></div>
+        <div class="srow"><div><div class="t">Release needs a second approver</div><div class="d">Blocked payments never release; a controller reopens instead. (Rule G2)</div></div><span class="toggle on"></span></div>
+        <details><summary>How a phone number is trusted</summary><div class="body">Starts at 50. +1 per 90 days on file (max +25). −40 if added in the last 90 days. +10 landline or mobile, −25 internet phone, −30 call forwarding. +5 per supporting document (max +15). Trusted at 70 or more and 90+ days.</div></details>
+      </div>
+      <div class="card">
+        <h2>Timing</h2>
+        <dl class="kv"><dt>Start calling</dt><dd>10 minutes after an invoice arrives</dd><dt>Retry window</dt><dd>3 attempts over 2 business days, then ask a person</dd><dt>Review deadline</dt><dd>3 days, then escalate to the controller</dd><dt>Hold tickets</dt><dd>Reviewed after 7 days</dd></dl>
+      </div>
+      <div class="card">
+        <div class="between"><h2 style="margin:0">Testing &amp; audit</h2><span class="chip ok"><span class="dot"></span>26 of 26 scenarios passing</span></div>
+        <p class="muted" style="margin-top:8px;font-size:14px">Every verification is replayed against 26 fraud and edge-case scenarios after each rule change. Full traces, timings, and costs are available for auditors.</p>
+        <div class="actions" style="margin-top:16px"><a class="btn sm" href="#advanced" data-event="open_prism_traces">Open test results</a><a class="btn sm" href="#advanced">Export audit log</a></div>
+      </div>
+      <div class="card">
+        <h2>Usage</h2>
+        <dl class="kv"><dt>This week</dt><dd>52 invoices checked · 4 vendor calls · about $0.06 per invoice</dd></dl>
+      </div>
+    </div>
+  </div>
+</div></main><div class="pbar"><span class="lbl">Jump to:</span><a href="#flow">Screen flow</a><a href="#home">Payments · inbox</a><a href="#verify">What changed · Harbor Steel</a><a href="#decide">Your decision · Summit Glass</a><a href="#approve">Approve payment · Delta Fabrication</a><a href="#onhold">On hold · next steps</a><a href="#record">Verification record · Delta</a><a href="#vendors">Vendors</a><a href="#settings">Settings</a><a href="#advanced">Settings · Advanced</a></div>
+<script>
+  // show one screen at a time; default to #home
+  function show(){var id=(location.hash||'#home').slice(1);document.querySelectorAll('.screen').forEach(function(s){s.style.display=s.id===id?'block':'none'});window.scrollTo(0,0)}
+  addEventListener('hashchange',show);show();
+</script></body></html>

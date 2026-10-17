@@ -1,0 +1,205 @@
+{
+  "companies": [
+    {
+      "id": 0,
+      "name": "Northwind Logistics LLC",
+      "contact": {
+        "email": "info@northwindlogistics.example.com",
+        "phone": "+1-555-010-2200"
+      },
+      "accountNumber": "100200300401",
+      "routingNumber": "011000015",
+      "transactionHistory": [
+        {
+          "transactionId": "TXN-0001",
+          "date": "2026-09-02",
+          "type": "credit",
+          "amount": 12500.0,
+          "currency": "USD",
+          "description": "Invoice #4471 payment received"
+        },
+        {
+          "transactionId": "TXN-0002",
+          "date": "2026-09-15",
+          "type": "debit",
+          "amount": 3200.5,
+          "currency": "USD",
+          "description": "Fleet fuel expense"
+        },
+        {
+          "transactionId": "TXN-0003",
+          "date": "2026-10-01",
+          "type": "debit",
+          "amount": 875.0,
+          "currency": "USD",
+          "description": "Warehouse insurance premium"
+        }
+      ],
+      "businessAddress": "1200 Harbor Blvd, Weehawken, NJ 07086"
+    },
+    {
+      "id": 1,
+      "name": "Bluebird Software Inc.",
+      "contact": {
+        "email": "hello@bluebirdsoftware.example.com",
+        "phone": "+1-555-010-3311"
+      },
+      "accountNumber": "100200300402",
+      "routingNumber": "021000021",
+      "transactionHistory": [
+        {
+          "transactionId": "TXN-0004",
+          "date": "2026-08-20",
+          "type": "credit",
+          "amount": 48000.0,
+          "currency": "USD",
+          "description": "Annual SaaS subscription - Acme Corp"
+        },
+        {
+          "transactionId": "TXN-0005",
+          "date": "2026-09-05",
+          "type": "debit",
+          "amount": 6400.0,
+          "currency": "USD",
+          "description": "Cloud hosting - September"
+        },
+        {
+          "transactionId": "TXN-0006",
+          "date": "2026-09-28",
+          "type": "credit",
+          "amount": 9750.0,
+          "currency": "USD",
+          "description": "Consulting services - Project Falcon"
+        },
+        {
+          "transactionId": "TXN-0007",
+          "date": "2026-10-10",
+          "type": "debit",
+          "amount": 1200.0,
+          "currency": "USD",
+          "description": "Office supplies"
+        }
+      ],
+      "businessAddress": "400 Technology Park, Burlington, MA 01803"
+    },
+    {
+      "id": 2,
+      "name": "Granite Peak Construction Co.",
+      "contact": {
+        "email": "office@granitepeakconstruction.example.com",
+        "phone": "+1-555-010-4422"
+      },
+      "accountNumber": "100200300403",
+      "routingNumber": "026009593",
+      "transactionHistory": [
+        {
+          "transactionId": "TXN-0008",
+          "date": "2026-09-10",
+          "type": "credit",
+          "amount": 215000.0,
+          "currency": "USD",
+          "description": "Milestone 2 payment - Riverside Plaza"
+        },
+        {
+          "transactionId": "TXN-0009",
+          "date": "2026-09-12",
+          "type": "debit",
+          "amount": 58300.75,
+          "currency": "USD",
+          "description": "Steel and concrete materials"
+        },
+        {
+          "transactionId": "TXN-0010",
+          "date": "2026-10-03",
+          "type": "debit",
+          "amount": 42000.0,
+          "currency": "USD",
+          "description": "Subcontractor payroll"
+        }
+      ],
+      "businessAddress": "88 Industrial Way, Sacramento, CA 95828"
+    },
+    {
+      "id": 3,
+      "name": "Harbor Light Cafe",
+      "contact": {
+        "email": "contact@harborlightcafe.example.com",
+        "phone": "+1-555-010-5533"
+      },
+      "accountNumber": "100200300404",
+      "routingNumber": "121000248",
+      "transactionHistory": [
+        {
+          "transactionId": "TXN-0011",
+          "date": "2026-09-30",
+          "type": "credit",
+          "amount": 18420.3,
+          "currency": "USD",
+          "description": "September card sales settlement"
+        },
+        {
+          "transactionId": "TXN-0012",
+          "date": "2026-10-01",
+          "type": "debit",
+          "amount": 4500.0,
+          "currency": "USD",
+          "description": "Monthly rent"
+        },
+        {
+          "transactionId": "TXN-0013",
+          "date": "2026-10-04",
+          "type": "debit",
+          "amount": 2310.8,
+          "currency": "USD",
+          "description": "Food and beverage supplier"
+        },
+        {
+          "transactionId": "TXN-0014",
+          "date": "2026-10-14",
+          "type": "debit",
+          "amount": 690.0,
+          "currency": "USD",
+          "description": "Utilities"
+        }
+      ],
+      "businessAddress": "22 Pier Street, Portland, ME 04101"
+    },
+    {
+      "id": 4,
+      "name": "Silverline Medical Supply",
+      "contact": {
+        "email": "sales@silverlinemedical.example.com",
+        "phone": "+1-555-010-6644"
+      },
+      "accountNumber": "100200300405",
+      "routingNumber": "071000013",
+      "transactionHistory": [
+        {
+          "transactionId": "TXN-0015",
+          "date": "2026-08-28",
+          "type": "credit",
+          "amount": 73250.0,
+          "currency": "USD",
+          "description": "Purchase order PO-8812 - Mercy Clinic"
+        },
+        {
+          "transactionId": "TXN-0016",
+          "date": "2026-09-18",
+          "type": "debit",
+          "amount": 29800.0,
+          "currency": "USD",
+          "description": "Inventory restock - gloves and masks"
+        },
+        {
+          "transactionId": "TXN-0017",
+          "date": "2026-10-08",
+          "type": "credit",
+          "amount": 15600.0,
+          "currency": "USD",
+          "description": "Purchase order PO-8830 - Lakeside Hospital"
+        }
+      ],
+      "businessAddress": "3300 Medical Center Dr, Chicago, IL 60612"
+    }
+  ]
+}

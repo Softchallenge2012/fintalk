@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Verification Console</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}" />
+</head>
+<body>
+  <main class="app-shell">
+    <section class="hero">
+      <h1>Verification Console</h1>
+      <p>Vendor verification, invoice phone-call verification, and final decision in one flow.</p>
+    </section>
+
+    <section class="row-grid">
+      <article class="panel" id="vendor-panel">
+        <h2>Vendor Verification</h2>
+        <div class="fields">
+          <label>
+            Vendor Name
+            <input id="vendor_name" type="text" placeholder="Bluebird Software Inc." />
+          </label>
+          <label>
+            Account Number
+            <input id="account_number" type="text" placeholder="100200300402" />
+          </label>
+          <label>
+            Phone Number
+            <input id="phone" type="text" placeholder="+1-555-010-3311" />
+          </label>
+          <label>
+            Address
+            <input id="business_address" type="text" placeholder="400 Technology Park, Burlington, MA 01803" />
+          </label>
+        </div>
+        <button id="vendor_verify_btn" class="btn-primary">Phone Call Verification</button>
+        <p class="status" id="vendor_status">Status: waiting</p>
+      </article>
+
+      <article class="panel" id="invoice-panel">
+        <h2>Invoice Verification</h2>
+        <p class="hint">This row uses one action button, as requested.</p>
+        <button id="invoice_verify_btn" class="btn-secondary">Phone Call Verification</button>
+        <p class="status" id="invoice_status">Status: waiting</p>
+      </article>
+
+      <article class="panel" id="result-panel">
+        <h2>Final Result</h2>
+        <p class="hint">Combines vendor and invoice outcomes into normal or abnormal.</p>
+        <button id="final_result_btn" class="btn-dark">Get Final Result</button>
+        <p class="status" id="final_status">Status: waiting</p>
+      </article>
+    </section>
+  </main>
+
+  <script src="{{ url_for('static', filename='app.js') }}"></script>
+</body>
+</html>
