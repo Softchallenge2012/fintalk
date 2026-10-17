@@ -1,12 +1,21 @@
 from __future__ import annotations
 
+import json
 from datetime import datetime
 from typing import Any
 
 from flask import Flask, jsonify, render_template, request
 
 from agents.invoice_agent import run_invoice_verification
-from agents.vendor_agent import run_vendor_verification
+from agents.vendor_agent import (
+    _find_company_in_directory,
+    _find_company_in_vendors,
+    _load_vendors,
+    _normalize,
+    _save_vendors,
+    initiate_phone_verification,
+    search_cfpb_reputation,
+)
 
 app = Flask(__name__)
 
@@ -29,27 +38,80 @@ def vendor_verify() -> Any:
         return jsonify({"error": "All vendor fields are required."}), 400
 
     try:
-        result = run_vendor_verification(
-            vendor_name=vendor_name,
-            account_number=account_number,
-            business_address=business_address,
-            phone=phone,
-        )
-        verdict_text = str(result.get("verdict", "")).lower()
+        company = _find_company_in_vendors(vendor_name)
 
-        if "added new entry" in verdict_text:
-            verdict = "added new entry"
-        elif "match" in verdict_text and "not" not in verdict_text:
-            verdict = "match"
-        else:
-            verdict = "not match"
+        if not company:
+            directory_company = _find_company_in_directory(vendor_name)
+            if not directory_company:
+                return jsonify({
+                    "verdict": "not found",
+                    "message": "Vendor not found in vendor.json or directorydb.json.",
+                })
+
+            vendors = _load_vendors()
+            existing_names = [_normalize(v.get("name", "")) for v in vendors]
+            if _normalize(directory_company.get("name", "")) not in existing_names:
+                vendors.append(directory_company)
+                _save_vendors(vendors)
+
+            return jsonify({
+                "verdict": "added new entry",
+                "message": "Vendor was not in vendor.json and has been copied from directorydb.json.",
+            })
+
+        acct_match = _normalize(company.get("accountNumber", "")) == _normalize(account_number)
+        addr_match = _normalize(company.get("businessAddress", "")) == _normalize(business_address)
+        phone_match = _normalize(company.get("contact", {}).get("phone", "")) == _normalize(phone)
+
+        if not (acct_match and addr_match and phone_match):
+            return jsonify({
+                "verdict": "not match",
+                "message": "Input does not match vendor.json record.",
+                "details": {
+                    "account_match": acct_match,
+                    "address_match": addr_match,
+                    "phone_match": phone_match,
+                },
+            })
+
+        reputation_raw = search_cfpb_reputation.invoke({"business_name": vendor_name})
+        reputation_data = json.loads(reputation_raw)
+        reputation = str(reputation_data.get("reputation", "unknown")).lower()
+
+        if reputation == "positive":
+            return jsonify({
+                "verdict": "match",
+                "message": "Vendor details matched and CFPB reputation is positive.",
+                "reputation": reputation,
+                "reputation_summary": reputation_data.get("summary", ""),
+            })
 
         return jsonify({
-            "verdict": verdict,
-            "raw_result": result.get("verdict", ""),
+            "verdict": "not match",
+            "message": "Vendor details matched, but CFPB reputation is not positive.",
+            "reputation": reputation,
+            "reputation_summary": reputation_data.get("summary", ""),
         })
-    except Exception as exc:  # pragma: no cover - depends on runtime model config
+    except Exception as exc:  # pragma: no cover - depends on runtime config
         return jsonify({"error": f"Vendor verification failed: {exc}"}), 500
+
+
+@app.post("/api/vendor-phone-verify")
+def vendor_phone_verify() -> Any:
+    payload = request.get_json(silent=True) or {}
+    reason = str(payload.get("reason", "manual phone verification")).strip() or "manual phone verification"
+
+    try:
+        phone_result_raw = initiate_phone_verification.invoke({"reason": reason})
+        phone_result = json.loads(phone_result_raw)
+        return jsonify({
+            "verified": bool(phone_result.get("verified", True)),
+            "phone_called": phone_result.get("phone_called", ""),
+            "note": phone_result.get("note", ""),
+            "reason": reason,
+        })
+    except Exception as exc:  # pragma: no cover - depends on runtime config
+        return jsonify({"error": f"Phone call verification failed: {exc}"}), 500
 
 
 @app.post("/api/invoice-verify")

@@ -7,6 +7,7 @@ const vendorStatus = document.getElementById("vendor_status");
 const invoiceStatus = document.getElementById("invoice_status");
 const finalStatus = document.getElementById("final_status");
 
+const vendorCheckButton = document.getElementById("vendor_check_btn");
 const vendorButton = document.getElementById("vendor_verify_btn");
 const invoiceButton = document.getElementById("invoice_verify_btn");
 const finalButton = document.getElementById("final_result_btn");
@@ -29,7 +30,7 @@ async function postJson(url, body) {
   return data;
 }
 
-vendorButton.addEventListener("click", async () => {
+async function runVendorVerification(statusLabel) {
   const payload = {
     vendor_name: document.getElementById("vendor_name").value,
     account_number: document.getElementById("account_number").value,
@@ -37,16 +38,42 @@ vendorButton.addEventListener("click", async () => {
     business_address: document.getElementById("business_address").value,
   };
 
+  vendorCheckButton.disabled = true;
   vendorButton.disabled = true;
-  markStatus(vendorStatus, "Status: running vendor phone-call verification...");
+  markStatus(vendorStatus, statusLabel);
 
   try {
     const data = await postJson("/api/vendor-verify", payload);
     state.vendorVerdict = data.verdict;
-    markStatus(vendorStatus, `Status: ${data.verdict}`);
+    const summary = data.reputation_summary ? ` | ${data.reputation_summary}` : "";
+    markStatus(vendorStatus, `Status: ${data.verdict} - ${data.message || ""}${summary}`);
   } catch (error) {
     markStatus(vendorStatus, `Status: ${error.message}`, true);
   } finally {
+    vendorCheckButton.disabled = false;
+    vendorButton.disabled = false;
+  }
+}
+
+vendorCheckButton.addEventListener("click", async () => {
+  await runVendorVerification("Status: running vendor verification...");
+});
+
+vendorButton.addEventListener("click", async () => {
+  vendorCheckButton.disabled = true;
+  vendorButton.disabled = true;
+  markStatus(vendorStatus, "Status: running vendor phone-call verification...");
+
+  try {
+    const data = await postJson("/api/vendor-phone-verify", {
+      reason: "manual frontend phone verification",
+    });
+    const resultText = data.verified ? "verified" : "not verified";
+    markStatus(vendorStatus, `Status: phone call ${resultText} | called ${data.phone_called}`);
+  } catch (error) {
+    markStatus(vendorStatus, `Status: ${error.message}`, true);
+  } finally {
+    vendorCheckButton.disabled = false;
     vendorButton.disabled = false;
   }
 });

@@ -1,13 +1,12 @@
 """
 Verification Agent
 ==================
-Orchestrates vendor and invoice agents and produces a final decision:
+Orchestrates vendor verification, vendor phone call verification, and invoice
+phone call verification to produce a final decision:
 
-- If invoice agent returns True  AND vendor agent returns "match"  → "normal"
-- If invoice agent returns False OR  vendor agent returns "not match" → "abnormal"
-
-(Note: the user spec says step 2 returns "normal" for both paths,
- but the intent is clearly "normal" vs "abnormal" — this is implemented accordingly.)
+- If (vendor verification is True OR vendor phone verification is True)
+    AND invoice verification is True → "normal"
+- Otherwise → "abnormal"
 """
 
 from __future__ import annotations
@@ -25,28 +24,24 @@ from langchain_core.prompts import ChatPromptTemplate, MessagesPlaceholder
 from langchain_core.tools import tool
 from langchain_openai import ChatOpenAI
 
-from vendor_agent import build_vendor_agent, run_vendor_verification
-from invoice_agent import build_invoice_agent, run_invoice_verification
+from vendor_agent import initiate_phone_verification
+from vendor_agent import run_vendor_verification
+from invoice_agent import run_invoice_verification
 
 
 # ---------------------------------------------------------------------------
 # Tools — these wrap the sub-agents
 # ---------------------------------------------------------------------------
 @tool
-def run_vendor_check(
+def run_vendor_verification_check(
     vendor_name: str,
     account_number: str,
     business_address: str,
     phone: str,
 ) -> str:
     """
-    Run the full vendor verification workflow:
-    1. Look up the vendor in the directory
-    2. Verify account number, address, and phone
-    3. If match, check CFPB reputation
-    4. If mismatch or new vendor, initiate phone call verification
-
-    Returns a JSON with verdict: "match", "not match", or "added new entry".
+    Run vendor verification (details + reputation workflow) and return whether
+    it is verified as a boolean.
 
     Args:
         vendor_name: Business name of the vendor.
@@ -60,14 +55,29 @@ def run_vendor_check(
         business_address=business_address,
         phone=phone,
     )
-    verdict_text = result["verdict"].lower()
-    if "match" in verdict_text and "not" not in verdict_text:
-        verdict = "match"
-    elif "added new entry" in verdict_text:
-        verdict = "added new entry"
-    else:
-        verdict = "not match"
-    return json.dumps({"verdict": verdict, "full_output": result["verdict"]})
+    verdict_text = str(result.get("verdict", "")).lower()
+    verified = "match" in verdict_text and "not" not in verdict_text
+    return json.dumps({"verified": verified, "raw_result": result.get("verdict", "")})
+
+
+@tool
+def run_vendor_phone_check(operator_override: bool = False) -> str:
+    """
+    Run vendor phone call verification only.
+    Default phone verification result is True.
+    Frontend/operator can override to False.
+
+    Args:
+        operator_override: Set True if frontend operator marked vendor phone call as not verified.
+    """
+    call_result_raw = initiate_phone_verification.invoke({"reason": "vendor phone call verification"})
+    call_result = json.loads(call_result_raw)
+    verified = bool(call_result.get("verified", True)) and not operator_override
+    return json.dumps({
+        "verified": verified,
+        "source": "frontend_override" if operator_override else "default_phone_verified",
+        "phone_called": call_result.get("phone_called", ""),
+    })
 
 
 @tool
@@ -97,40 +107,36 @@ def run_invoice_check(
 
 
 @tool
-def make_final_decision(vendor_verdict: str, invoice_verified: bool) -> str:
+def make_final_decision(vendor_verified: bool, vendor_phone_verified: bool, invoice_verified: bool) -> str:
     """
-    Produce the final verification decision based on vendor and invoice results.
+    Produce the final decision based on vendor verification, vendor phone call
+    verification, and invoice verification.
 
     Rules:
-    - vendor_verdict == "match" AND invoice_verified == True  → "normal"
-    - vendor_verdict == "not match" OR invoice_verified == False → "abnormal"
-    - vendor_verdict == "added new entry" → "abnormal" (new vendor, needs review)
+    - (vendor_verified == True OR vendor_phone_verified == True)
+      AND invoice_verified == True  → "normal"
+    - Otherwise → "abnormal"
 
     Args:
-        vendor_verdict: Output from the vendor agent: "match", "not match", or "added new entry".
-        invoice_verified: Output from the invoice agent: True or False.
+        vendor_verified: Vendor verification result.
+        vendor_phone_verified: Vendor phone call verification result.
+        invoice_verified: Invoice verification result.
 
     Returns:
         JSON with decision: "normal" or "abnormal", plus a reason.
     """
-    vendor_match = vendor_verdict.strip().lower() == "match"
-    if vendor_match and invoice_verified:
+    if (vendor_verified or vendor_phone_verified) and invoice_verified:
         decision = "normal"
-        reason = "Vendor verified and invoice confirmed."
-    elif not vendor_match and not invoice_verified:
-        decision = "abnormal"
-        reason = f"Vendor check: '{vendor_verdict}'. Invoice verification: failed."
-    elif not vendor_match:
-        decision = "abnormal"
-        reason = f"Vendor check returned '{vendor_verdict}'."
+        reason = "Invoice is verified and vendor is verified by details/reputation or phone call."
     else:
         decision = "abnormal"
-        reason = "Invoice verification failed (not verified by operator)."
+        reason = "Invoice is not verified or vendor is not verified by both methods."
 
     return json.dumps({
         "decision": decision,
         "reason": reason,
-        "vendor_verdict": vendor_verdict,
+        "vendor_verified": vendor_verified,
+        "vendor_phone_verified": vendor_phone_verified,
         "invoice_verified": invoice_verified,
     })
 
@@ -139,16 +145,19 @@ def make_final_decision(vendor_verdict: str, invoice_verified: bool) -> str:
 # System prompt
 # ---------------------------------------------------------------------------
 VERIFICATION_SYSTEM_PROMPT = """You are the Master Verification Agent. You coordinate
-the Vendor Agent and Invoice Agent to produce a final payment authorization decision.
+vendor verification, vendor phone verification, and invoice verification to
+produce a final decision.
 
 Workflow:
-1. Use `run_vendor_check` with the vendor's details.
-2. Use `run_invoice_check` with the invoice details.
-3. Use `make_final_decision` with both results to produce "normal" or "abnormal".
+1. Use `run_vendor_verification_check` to get vendor verification result.
+2. Use `run_vendor_phone_check` to get vendor phone call verification result.
+3. Use `run_invoice_check` with the invoice details.
+4. Use `make_final_decision` with all three results to produce "normal" or "abnormal".
 
 Decision rules:
-- "normal"   → vendor returned "match" AND invoice returned True (verified)
-- "abnormal" → vendor returned "not match" or "added new entry", OR invoice returned False
+- "normal"   → (vendor verification is True OR vendor phone verification is True)
+               AND invoice verification is True
+- "abnormal" → otherwise
 
 Always state the final decision clearly: "normal" or "abnormal", along with a brief reason.
 """
@@ -159,7 +168,12 @@ Always state the final decision clearly: "normal" or "abnormal", along with a br
 # ---------------------------------------------------------------------------
 def build_verification_agent(model: str = "gpt-4o-mini") -> AgentExecutor:
     llm = ChatOpenAI(model=model, temperature=0)
-    tools = [run_vendor_check, run_invoice_check, make_final_decision]
+    tools = [
+        run_vendor_verification_check,
+        run_vendor_phone_check,
+        run_invoice_check,
+        make_final_decision,
+    ]
     prompt = ChatPromptTemplate.from_messages([
         ("system", VERIFICATION_SYSTEM_PROMPT),
         MessagesPlaceholder("chat_history", optional=True),
@@ -180,6 +194,7 @@ def run_full_verification(
     phone: str,
     invoice_id: str,
     invoice_amount: float,
+    vendor_operator_override: bool = False,
     invoice_operator_override: bool = False,
     model: str = "gpt-4o-mini",
 ) -> dict:
@@ -198,8 +213,15 @@ def run_full_verification(
         f"  Phone: {phone}\n"
         f"  Invoice ID: {invoice_id}\n"
         f"  Invoice Amount: ${invoice_amount:.2f}\n"
+        + (f"  Note: The operator has marked the vendor call as NOT VERIFIED.\n"
+           if vendor_operator_override else "")
         + (f"  Note: The operator has marked the invoice call as NOT VERIFIED.\n"
            if invoice_operator_override else "")
+        + (
+            "  Please use run_vendor_phone_check with operator_override=True.\n"
+            if vendor_operator_override else
+            "  Please use run_vendor_phone_check with operator_override=False.\n"
+        )
     )
     result = agent.invoke({"input": query})
     output = result["output"]

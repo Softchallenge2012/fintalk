@@ -126,6 +126,12 @@ button:disabled {
   color: #f9fafb;
 }
 
+.action-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
 .status {
   margin-top: 10px;
   font-weight: 600;
@@ -154,5 +160,9 @@ button:disabled {
 @media (max-width: 840px) {
   .fields {
     grid-template-columns: 1fr;
+  }
+
+  .action-row button {
+    width: 100%;
   }
 }
